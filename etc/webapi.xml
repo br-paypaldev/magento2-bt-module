@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
+    <route url="/V1/braintreebrasil/creditcard/available-installments" method="POST">
+        <service class="Paypal\BraintreeBrasil\Api\CreditCardManagementInterface" method="getAvailableInstallments"/>
+        <resources>
+            <resource ref="anonymous" />
+        </resources>
+    </route>
+
+    <route url="/V1/braintreebrasil/creditcard/save-selected-installments" method="POST">
+        <service class="Paypal\BraintreeBrasil\Api\CreditCardManagementInterface" method="saveSelectedInstallments"/>
+        <resources>
+            <resource ref="anonymous" />
+        </resources>
+    </route>
+
+    <route url="/V1/braintreebrasil/available-payment-tokens/:type" method="GET">
+        <service class="Paypal\BraintreeBrasil\Api\PaymentTokenManagementInterface" method="getAvailablePaymentTokens"/>
+        <resources>
+            <resource ref="self" />
+        </resources>
+    </route>
+
+    <route url="/V1/braintreebrasil/paypal-wallet/save-payment-method" method="POST">
+        <service class="Paypal\BraintreeBrasil\Api\PaypalWalletManagementInterface" method="savePaypalPaymentMethod"/>
+        <resources>
+            <resource ref="anonymous" />
+        </resources>
+    </route>
+
+    <route url="/V1/braintreebrasil/paypal-wallet/save-selected-installments" method="POST">
+        <service class="Paypal\BraintreeBrasil\Api\PaypalWalletManagementInterface" method="saveSelectedInstallments"/>
+        <resources>
+            <resource ref="anonymous" />
+        </resources>
+    </route>
+
+    <route url="/V1/braintreebrasil/paypal-wallet/available-installments" method="POST">
+        <service class="Paypal\BraintreeBrasil\Api\PaypalWalletManagementInterface" method="getAvailableInstallments"/>
+        <resources>
+            <resource ref="anonymous" />
+        </resources>
+    </route>
+</routes>

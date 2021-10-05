@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <update handle="sales_order_item_price"/>
+    <body>
+        <referenceBlock name="creditmemo_totals">
+            <block class="Paypal\BraintreeBrasil\Block\Sales\Order\Creditmemo\InstallmentsInterestRate"
+                   name="installments_interest_rate"
+                   template="Paypal_BraintreeBrasil::order/totals/creditmemo/installments_interest_rate.phtml"
+            >
+                <action method="setSourceField">
+                    <argument name="value" xsi:type="string">installments_interest_rate</argument>
+                </action>
+                <action method="setLabel">
+                    <argument name="value" xsi:type="string">Installments interest rate</argument>
+                </action>
+            </block>
+        </referenceBlock>
+    </body>
+</page>

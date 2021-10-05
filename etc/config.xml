@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <paypal_braintree_brasil>
+            <integration>
+                <mode>sandbox</mode>
+                <sandbox_private_key backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
+                <production_private_key backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
+                <debug>0</debug>
+            </integration>
+        </paypal_braintree_brasil>
+        <payment>
+            <paypal_braintree_brasil_creditcard>
+                <active>0</active>
+                <group>paypal_braintree_brasil</group>
+                <model>PaypalBraintreeBrasilCreditCardFacade</model>
+                <order_status>pending</order_status>
+                <payment_action>authorize</payment_action>
+                <title>Braintree Credit Card</title>
+                <can_authorize>1</can_authorize>
+                <can_capture>1</can_capture>
+                <can_capture_partial>0</can_capture_partial>
+                <can_cancel>1</can_cancel>
+                <can_refund>1</can_refund>
+                <can_refund_partial_per_invoice>1</can_refund_partial_per_invoice>
+                <can_void>1</can_void>
+                <can_use_checkout>1</can_use_checkout>
+                <is_gateway>1</is_gateway>
+                <channel>DigitalHub_Ecom</channel>
+            </paypal_braintree_brasil_creditcard>
+            <paypal_braintree_brasil_debitcard>
+                <active>0</active>
+                <group>paypal_braintree_brasil</group>
+                <model>PaypalBraintreeBrasilDebitCardFacade</model>
+                <order_status>processing</order_status>
+                <payment_action>authorize_capture</payment_action>
+                <title>Braintree Debit Card</title>
+                <can_authorize>1</can_authorize>
+                <can_capture>1</can_capture>
+                <can_capture_partial>0</can_capture_partial>
+                <can_cancel>0</can_cancel>
+                <can_refund>1</can_refund>
+                <can_refund_partial_per_invoice>1</can_refund_partial_per_invoice>
+                <can_void>0</can_void>
+                <can_use_checkout>1</can_use_checkout>
+                <is_gateway>1</is_gateway>
+                <channel>DigitalHub_Ecom</channel>
+            </paypal_braintree_brasil_debitcard>
+            <paypal_braintree_brasil_paypal_wallet>
+                <active>0</active>
+                <group>paypal_braintree_brasil</group>
+                <model>PaypalBraintreeBrasilPaypalWalletFacade</model>
+                <order_status>processing</order_status>
+                <payment_action>authorize</payment_action>
+                <title>PayPal Wallet</title>
+                <can_authorize>1</can_authorize>
+                <can_capture>1</can_capture>
+                <can_capture_partial>1</can_capture_partial>
+                <can_cancel>1</can_cancel>
+                <can_refund>1</can_refund>
+                <can_refund_partial_per_invoice>1</can_refund_partial_per_invoice>
+                <can_void>1</can_void>
+                <can_use_checkout>1</can_use_checkout>
+                <is_gateway>1</is_gateway>
+                <channel>DigitalHub_Ecom</channel>
+            </paypal_braintree_brasil_paypal_wallet>
+        </payment>
+    </default>
+</config>

@@ -1,0 +1,5 @@
+include:
+  - project: digitalhub/devops/ci-templates
+    ref: master
+    file:
+      - 'magento2/modules/.m2-workflow-module.yml'

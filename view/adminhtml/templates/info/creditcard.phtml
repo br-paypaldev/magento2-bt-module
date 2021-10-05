@@ -1,0 +1,72 @@
+<?php /** @var \Magento\Framework\Escaper $escaper */ ?>
+<?php /** @var \Paypal\BraintreeBrasil\Block\Info\CreditCard $block */ ?>
+<?php $additionalInformation = $block->getInfo()->getAdditionalInformation(); ?>
+<p><?= $escaper->escapeHtml($block->getMethod()->getTitle()) ?></p>
+
+
+<table class="admin__table-secondary order-information-table">
+    <tr>
+        <th class="label">
+            <?php echo __('Braintree Transaction ID') ?>
+        </th>
+        <td class="value">
+            <?= $escaper->escapeHtml($block->getTransactionId()) ?>
+        </td>
+    </tr>
+    <tr>
+        <th class="label">
+            <?php echo __('Card Number') ?>
+        </th>
+        <td class="value">
+            XXXX-XXXX-XXXX-<?= $escaper->escapeHtml($additionalInformation['cc_last']) ?>
+        </td>
+    </tr>
+    <tr>
+        <th class="label">
+            <?php echo __('Card Brand') ?>
+        </th>
+        <td class="value">
+            <?= $escaper->escapeHtml($additionalInformation['cc_type']) ?>
+        </td>
+    </tr>
+    <?php if($additionalInformation['installments'] > 1 && !$additionalInformation['installments_interest_rate']): ?>
+        <tr>
+            <th class="label">
+                <?php echo __('Installments') ?>
+            </th>
+            <td class="value">
+                <?php
+                    echo sprintf(
+                        __('%sx of %s without interest'),
+                        $additionalInformation['installments'],
+                        $block->formatCurrency($additionalInformation['installments_value'])
+                    );
+                ?>
+            </td>
+        </tr>
+    <?php elseif($additionalInformation['installments'] > 1 && $additionalInformation['installments_interest_rate']): ?>
+        <tr>
+            <th class="label">
+                <?php echo __('Installments') ?>
+            </th>
+            <td class="value">
+                <?php
+                    echo sprintf(
+                        __('%sx of %s with interest'),
+                        $additionalInformation['installments'],
+                        $block->formatCurrency($additionalInformation['installments_value'])
+                    );
+                ?>
+            </td>
+        </tr>
+    <?php elseif($additionalInformation['installments'] == 1): ?>
+        <tr>
+            <th class="label">
+                <?php echo __('Installments') ?>
+            </th>
+            <td class="value">
+                <?php echo __('1x'); ?>
+            </td>
+        </tr>
+    <?php endif; ?>
+</table>

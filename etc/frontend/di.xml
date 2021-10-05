@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\Checkout\Model\CompositeConfigProvider">
+        <arguments>
+            <argument name="configProviders" xsi:type="array">
+                <item name="paypal_braintree_brasil_config" xsi:type="object">Paypal\BraintreeBrasil\Model\Ui\ConfigProvider</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Magento\Checkout\Model\CompositeConfigProvider">
+        <arguments>
+            <argument name="configProviders" xsi:type="array">
+                <item name="paypal_braintree_brasil_creditcard_config" xsi:type="object">Paypal\BraintreeBrasil\Model\Ui\CreditCard\ConfigProvider</item>
+                <item name="paypal_braintree_brasil_debitcard_config" xsi:type="object">Paypal\BraintreeBrasil\Model\Ui\DebitCard\ConfigProvider</item>
+                <item name="paypal_braintree_brasil_paypal_wallet_config" xsi:type="object">Paypal\BraintreeBrasil\Model\Ui\PaypalWallet\ConfigProvider</item>
+            </argument>
+        </arguments>
+    </type>
+</config>

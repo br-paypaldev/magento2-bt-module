@@ -1,0 +1,40 @@
+<?php /** @var \Magento\Framework\Escaper $escaper */ ?>
+<?php /** @var \Paypal\BraintreeBrasil\Block\Info\PaypalWallet $block */ ?>
+<?php $additionalInformation = $block->getInfo()->getAdditionalInformation(); ?>
+<h4><?= $escaper->escapeHtml($block->getMethod()->getTitle()) ?></h4>
+
+<p>
+    <strong><?php echo __('Payer Email') ?></strong><br>
+    <?= $escaper->escapeHtml($additionalInformation['paypalPayerEmail']) ?>
+</p>
+
+<?php if(isset($additionalInformation['installments'])): ?>
+    <?php if($additionalInformation['installments'] > 1 && !$additionalInformation['installments_interest_rate']): ?>
+        <p>
+            <strong><?php echo __('Installments') ?></strong><br>
+            <?php
+                echo sprintf(
+                    __('%sx of %s without interest'),
+                    $additionalInformation['installments'],
+                    $block->formatCurrency($additionalInformation['installments_value'])
+                );
+            ?>
+        </p>
+    <?php elseif($additionalInformation['installments'] > 1 && $additionalInformation['installments_interest_rate']): ?>
+        <p>
+            <strong><?php echo __('Installments') ?></strong><br>
+            <?php
+                echo sprintf(
+                    __('%sx of %s with interest'),
+                    $additionalInformation['installments'],
+                    $block->formatCurrency($additionalInformation['installments_value'])
+                );
+            ?>
+        </p>
+    <?php elseif($additionalInformation['installments'] == 1): ?>
+        <p>
+            <strong><?php echo __('Installments') ?></strong><br>
+            <?php echo __('1x'); ?>
+        </p>
+    <?php endif; ?>
+<?php endif; ?>

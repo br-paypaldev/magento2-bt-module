@@ -1,0 +1,14 @@
+<?php /** @var \Magento\Framework\Escaper $escaper */ ?>
+<?php /** @var \Paypal\BraintreeBrasil\Block\Info\DebitCard $block */ ?>
+<?php $additionalInformation = $block->getInfo()->getAdditionalInformation(); ?>
+<h4><?= $escaper->escapeHtml($block->getMethod()->getTitle()) ?></h4>
+
+<p>
+    <strong><?php echo __('Card Number') ?></strong><br>
+    XXXX-XXXX-XXXX-<?= $escaper->escapeHtml($additionalInformation['dc_last']) ?>
+</p>
+
+<p>
+    <strong><?php echo __('Card Brand') ?></strong><br>
+    <?= $escaper->escapeHtml($additionalInformation['dc_type']) ?>
+</p>

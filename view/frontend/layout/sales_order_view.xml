@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="order_totals">
+            <block class="Paypal\BraintreeBrasil\Block\Sales\Order\Totals\InstallmentsInterestRate"
+                   name="order_totals_installments_interest_rate"
+                   template="Paypal_BraintreeBrasil::order/totals/installments_interest_rate.phtml"
+                   cacheable="false" />
+        </referenceContainer>
+    </body>
+</page>

@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<include xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_include.xsd">
+    <group id="paypal_wallet" translate="label" type="text" sortOrder="500" showInDefault="1" showInWebsite="1" showInStore="1">
+        <label>PayPal Wallet</label>
+
+        <field id="active" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Enable payment method</label>
+            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+            <config_path>payment/paypal_braintree_brasil_paypal_wallet/active</config_path>
+        </field>
+
+        <field id="title" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Payment method title</label>
+            <config_path>payment/paypal_braintree_brasil_paypal_wallet/title</config_path>
+        </field>
+
+        <field id="enable_installments" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Enable installments</label>
+            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+            <config_path>payment/paypal_braintree_brasil_paypal_wallet/enable_installments</config_path>
+            <comment>Important: For payments with installments the value 'Authorization and Capture (capture automatically)' is assumed.</comment>
+            <frontend_model>Paypal\BraintreeBrasil\Block\Adminhtml\System\Config\ChangeAuthorizeCaptureValue</frontend_model>
+        </field>
+
+        <field id="payment_action" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Capture method</label>
+            <source_model>Paypal\BraintreeBrasil\Model\Config\Source\PaymentAction</source_model>
+            <config_path>payment/paypal_braintree_brasil_paypal_wallet/payment_action</config_path>
+        </field>
+
+        <field id="max_installments" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Maximum number for installments</label>
+            <frontend_class>validate-number</frontend_class>
+            <config_path>payment/paypal_braintree_brasil_paypal_wallet/max_installments</config_path>
+            <depends>
+                <field id="enable_installments">1</field>
+            </depends>
+        </field>
+
+        <field id="sort_order" translate="label" type="text" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Sort Order</label>
+            <frontend_class>validate-number</frontend_class>
+            <config_path>payment/paypal_braintree_brasil_paypal_wallet/sort_order</config_path>
+        </field>
+    </group>
+</include>

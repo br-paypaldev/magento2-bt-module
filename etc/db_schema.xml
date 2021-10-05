@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="braintree_brasil_payment_token" resource="default" engine="innodb" comment="Braintree saved payment methods">
+        <column xsi:type="int" name="entity_id" unsigned="true" nullable="false" identity="true" comment="Entity ID"/>
+        <column xsi:type="int" name="customer_id" unsigned="true" nullable="false" comment="Customer ID"/>
+        <column xsi:type="varchar" length="45" name="token" nullable="false" comment="Card token"/>
+        <column xsi:type="varchar" length="45" name="type" nullable="false" comment="Payment method type"/>
+        <column xsi:type="varchar" length="20" name="card_brand" nullable="true" comment="Card brand"/>
+        <column xsi:type="varchar" length="2" name="card_exp_month" nullable="true" comment="Expiration Month"/>
+        <column xsi:type="varchar" length="4" name="card_exp_year" nullable="true" comment="Expiration Year"/>
+        <column xsi:type="varchar" length="4" name="card_last_four" nullable="true" comment="Card last 4 digits"/>
+        <column xsi:type="datetime" name="created_at" nullable="false" comment="Created at"/>
+        <column xsi:type="varchar" length="255" name="paypal_email" nullable="true" comment="Paypal account email"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="entity_id"/>
+        </constraint>
+        <constraint xsi:type="foreign" referenceId="BRAINTREE_BRASIL_SAVED_PAYMENT_METHOD_CUSTOMER_ID_CUSTOMER_ENTITY_ID" table="braintree_brasil_saved_payment_method" column="customer_id" referenceTable="customer_entity" referenceColumn="entity_id" onDelete="CASCADE"/>
+    </table>
+
+    <table name="quote">
+        <column xsi:type="tinyint" name="creditcard_installments" nullable="true" comment="Selected installments"/>
+        <column xsi:type="tinyint" name="paypalwallet_installments" nullable="true" comment="Selected installments"/>
+        <column xsi:type="decimal" scale="4" precision="10" name="installments_interest_rate" default="0" comment="Installments interest rate"/>
+    </table>
+    <table name="sales_order">
+        <column xsi:type="tinyint" name="creditcard_installments" nullable="true" comment="Selected installments"/>
+        <column xsi:type="tinyint" name="paypalwallet_installments" nullable="true" comment="Selected installments"/>
+        <column xsi:type="decimal" scale="4" precision="10" name="installments_interest_rate" default="0" comment="Installments interest rate"/>
+        <column xsi:type="decimal" scale="4" precision="10" name="installments_interest_rate_refunded" default="0" comment="Installments interest rate refunded"/>
+    </table>
+    <table name="sales_invoice">
+        <column xsi:type="decimal" scale="4" precision="10" name="installments_interest_rate" default="0" comment="Installments interest rate"/>
+    </table>
+    <table name="sales_creditmemo">
+        <column xsi:type="decimal" scale="4" precision="10" name="installments_interest_rate" default="0" comment="Installments interest rate"/>
+    </table>
+</schema>

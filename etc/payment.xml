@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<payment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Payment:etc/payment.xsd">
+    <groups>
+        <group id="paypal_braintree_brasil">
+            <label>Braintree Brasil</label>
+        </group>
+    </groups>
+    <methods>
+        <method name="paypal_braintree_brasil_creditcard">
+            <allow_multiple_address>0</allow_multiple_address>
+        </method>
+        <method name="paypal_braintree_brasil_debitcard">
+            <allow_multiple_address>0</allow_multiple_address>
+        </method>
+        <method name="paypal_braintree_brasil_paypal_wallet">
+            <allow_multiple_address>0</allow_multiple_address>
+        </method>
+    </methods>
+</payment>

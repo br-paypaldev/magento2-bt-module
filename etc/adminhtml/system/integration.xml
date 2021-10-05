@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<include xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_include.xsd">
+    <group id="integration" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
+        <label>Braintree integration</label>
+
+        <field id="mode" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Integration mode</label>
+            <source_model>Paypal\BraintreeBrasil\Model\Config\Source\IntegrationMode</source_model>
+            <config_path>paypal_braintree_brasil/integration/mode</config_path>
+        </field>
+
+        <field id="sandbox_merchant_id" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Merchant ID (sandbox mode)</label>
+            <config_path>paypal_braintree_brasil/integration/sandbox_merchant_id</config_path>
+            <depends>
+                <field id="mode">sandbox</field>
+            </depends>
+        </field>
+
+        <field id="sandbox_public_key" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Public Key (sandbox mode)</label>
+            <config_path>paypal_braintree_brasil/integration/sandbox_public_key</config_path>
+            <depends>
+                <field id="mode">sandbox</field>
+            </depends>
+        </field>
+
+        <field id="sandbox_private_key" translate="label" type="obscure" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Private Key (sandbox mode)</label>
+            <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+            <config_path>paypal_braintree_brasil/integration/sandbox_private_key</config_path>
+            <depends>
+                <field id="mode">sandbox</field>
+            </depends>
+        </field>
+
+        <field id="production_merchant_id" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Merchant ID (production mode)</label>
+            <config_path>paypal_braintree_brasil/integration/production_merchant_id</config_path>
+            <depends>
+                <field id="mode">production</field>
+            </depends>
+        </field>
+
+        <field id="production_public_key" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Public Key (production mode)</label>
+            <config_path>paypal_braintree_brasil/integration/production_public_key</config_path>
+            <depends>
+                <field id="mode">production</field>
+            </depends>
+        </field>
+
+        <field id="production_private_key" translate="label" type="obscure" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Private Key (production mode)</label>
+            <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+            <config_path>paypal_braintree_brasil/integration/production_private_key</config_path>
+            <depends>
+                <field id="mode">production</field>
+            </depends>
+        </field>
+
+        <field id="sandbox_merchant_account_id" translate="label" type="text" sortOrder="75" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Specify a Merchant Account ID (sandbox mode)</label>
+            <config_path>paypal_braintree_brasil/integration/sandbox_merchant_account_id</config_path>
+            <comment>Braintree uses the default Merchant Account ID if not provided</comment>
+            <depends>
+                <field id="mode">sandbox</field>
+            </depends>
+        </field>
+
+        <field id="production_merchant_account_id" translate="label" type="text" sortOrder="75" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Specify a Merchant Account ID (production mode)</label>
+            <config_path>paypal_braintree_brasil/integration/production_merchant_account_id</config_path>
+            <comment>Braintree uses the default Merchant Account ID if not provided</comment>
+            <depends>
+                <field id="mode">production</field>
+            </depends>
+        </field>
+
+        <field id="debug" translate="label" type="select" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Enable debug</label>
+            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+            <config_path>paypal_braintree_brasil/integration/debug</config_path>
+            <comment>Log debug informations to var/log/braintree_brasil.log</comment>
+        </field>
+    </group>
+</include>

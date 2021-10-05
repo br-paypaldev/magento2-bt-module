@@ -1,0 +1,593 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+
+    <preference for="Paypal\BraintreeBrasil\Api\PaymentTokenRepositoryInterface" type="Paypal\BraintreeBrasil\Model\PaymentTokenRepository"/>
+    <preference for="Paypal\BraintreeBrasil\Api\PaymentTokenManagementInterface" type="Paypal\BraintreeBrasil\Model\PaymentTokenManagement"/>
+    <preference for="Paypal\BraintreeBrasil\Api\Data\PaymentTokenInterface" type="Paypal\BraintreeBrasil\Model\Data\PaymentToken"/>
+    <preference for="Paypal\BraintreeBrasil\Api\Data\PaymentTokenSearchResultInterface" type="Magento\Framework\Api\SearchResults"/>
+    <preference for="Paypal\BraintreeBrasil\Api\Data\InstallmentInterface" type="Paypal\BraintreeBrasil\Model\Data\Installment" />
+    <preference for="Paypal\BraintreeBrasil\Api\CreditCardManagementInterface" type="Paypal\BraintreeBrasil\Model\CreditCardManagement" />
+    <preference for="Paypal\BraintreeBrasil\Api\PaypalWalletManagementInterface" type="Paypal\BraintreeBrasil\Model\PaypalWalletManagement"/>
+
+    <type name="Magento\Sales\Model\Order\Creditmemo\RefundOperation">
+        <plugin name="paypal_braintree_brasil_plugin_before_refund" type="Paypal\BraintreeBrasil\Plugin\Sales\Order\RefundPlugin"/>
+    </type>
+    <type name="Paypal\BraintreeBrasil\Model\Total\Creditmemo\InstallmentsInterestRate">
+        <plugin name="paypal_braintree_brasil_plugin_before_collect" type="Paypal\BraintreeBrasil\Plugin\Sales\Creditmemo\CreditmemoCollectTotalsBefore"/>
+    </type>
+    <type name="Magento\Sales\Model\Order\CreditmemoFactory">
+        <plugin name="paypal_braintree_brasil_plugin_before_creditmemofactory" type="Paypal\BraintreeBrasil\Plugin\Sales\Creditmemo\CreditmemoFactoryBefore"/>
+    </type>
+
+    <type name="Magento\Framework\EntityManager\HydratorPool">
+        <arguments>
+            <argument name="hydrators" xsi:type="array">
+                <item name="Paypal\BraintreeBrasil\Api\Data\PaymentTokenInterface" xsi:type="string">Magento\Framework\EntityManager\AbstractModelHydrator</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Magento\Framework\EntityManager\MetadataPool">
+        <arguments>
+            <argument name="metadata" xsi:type="array">
+                <item name="Paypal\BraintreeBrasil\Api\Data\PaymentTokenInterface" xsi:type="array">
+                    <item name="entityTableName" xsi:type="string">braintree_brasil_payment_token</item>
+                    <item name="identifierField" xsi:type="string">entity_id</item>
+                </item>
+            </argument>
+        </arguments>
+    </type>
+
+    <!-- Order initial status -->
+    <type name="Magento\Sales\Model\Order\Payment\State\AuthorizeCommand">
+        <plugin name="paypal_braintree_brasil_plugin_initial_order_status" type="Paypal\BraintreeBrasil\Plugin\Sales\Model\Order\Payment\State\AuthorizeCommandPlugin"/>
+    </type>
+
+    <type name="Magento\Checkout\Model\CompositeConfigProvider">
+        <arguments>
+            <argument name="configProviders" xsi:type="array">
+                <item name="paypal_braintree_brasil_config" xsi:type="object">Paypal\BraintreeBrasil\Model\Ui\ConfigProvider</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Paypal\BraintreeBrasil\Logger\Handler">
+        <arguments>
+            <argument name="filesystem" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
+        </arguments>
+    </type>
+    <type name="Paypal\BraintreeBrasil\Logger\Logger">
+        <arguments>
+            <argument name="name" xsi:type="string">braintreeBrasilLogger</argument>
+            <argument name="handlers"  xsi:type="array">
+                <item name="debug" xsi:type="object">Paypal\BraintreeBrasil\Logger\Handler</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <virtualType name="PaypalBraintreeBrasilConfig" type="Paypal\BraintreeBrasil\Gateway\Config\Config">
+        <arguments>
+            <argument name="methodCode" xsi:type="const">Paypal\BraintreeBrasil\Model\Ui\ConfigProvider::CODE</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- === Cartão de Crédito === -->
+
+    <type name="Magento\Checkout\Model\CompositeConfigProvider">
+        <arguments>
+            <argument name="configProviders" xsi:type="array">
+                <item name="paypal_braintree_brasil_creditcard_config" xsi:type="object">Paypal\BraintreeBrasil\Model\Ui\CreditCard\ConfigProvider</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <!-- Method Facade -->
+    <virtualType name="PaypalBraintreeBrasilCreditCardFacade" type="Magento\Payment\Model\Method\Adapter">
+        <arguments>
+            <argument name="code" xsi:type="const">\Paypal\BraintreeBrasil\Model\Ui\CreditCard\ConfigProvider::CODE</argument>
+            <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form</argument>
+            <argument name="infoBlockType" xsi:type="string">Paypal\BraintreeBrasil\Block\Info\CreditCard</argument>
+            <argument name="valueHandlerPool" xsi:type="object">PaypalBraintreeBrasilCreditCardValueHandlerPool</argument>
+            <argument name="validatorPool" xsi:type="object">PaypalBraintreeBrasilCreditCardValidatorPool</argument>
+            <argument name="commandPool" xsi:type="object">PaypalBraintreeBrasilCreditCardCommandPool</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Command Pool -->
+    <virtualType name="PaypalBraintreeBrasilCreditCardCommandPool" type="Magento\Payment\Gateway\Command\CommandPool">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="authorize" xsi:type="string">PaypalBraintreeBrasilCreditCardAuthorizeCommand</item>
+                <item name="sale" xsi:type="string">PaypalBraintreeBrasilCreditCardAuthorizeCommand</item>
+                <item name="cancel" xsi:type="string">PaypalBraintreeBrasilCreditCardCancelCommand</item>
+                <item name="void" xsi:type="string">PaypalBraintreeBrasilCreditCardCancelCommand</item>
+                <item name="refund" xsi:type="string">PaypalBraintreeBrasilCreditCardRefundCommand</item>
+                <item name="capture" xsi:type="string">PaypalBraintreeBrasilCreditCardCaptureStrategyCommand</item>
+                <item name="settlement" xsi:type="string">PaypalBraintreeBrasilCreditCardCaptureCommand</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Authorize Command -->
+    <virtualType name="PaypalBraintreeBrasilCreditCardAuthorizeCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">PaypalBraintreeBrasilCreditCardAuthorizationRequest</argument>
+            <argument name="transferFactory" xsi:type="object">Paypal\BraintreeBrasil\Gateway\Http\TransferFactory</argument>
+            <argument name="client" xsi:type="object">Paypal\BraintreeBrasil\Gateway\Http\Client\CreditCard\TransactionAuthorization</argument>
+            <argument name="validator" xsi:type="object">Paypal\BraintreeBrasil\Gateway\Validator\CreditCard\AuthorizationValidator</argument>
+            <argument name="handler" xsi:type="object">PaypalBraintreeBrasilCreditCardAuthorizationResponseHandler</argument>
+            <argument name="errorMessageMapper" xsi:type="object">Paypal\BraintreeBrasil\Gateway\Response\MessageMapper</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Authorize Request Builder Composite -->
+    <virtualType name="PaypalBraintreeBrasilCreditCardAuthorizationRequest" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="order" xsi:type="string">Paypal\BraintreeBrasil\Gateway\Request\OrderDataBuilder</item>
+                <item name="customer" xsi:type="string">Paypal\BraintreeBrasil\Gateway\Request\CustomerDataBuilder</item>
+                <item name="payment" xsi:type="string">Paypal\BraintreeBrasil\Gateway\Request\CreditCard\PaymentDataBuilder</item>
+                <item name="channel" xsi:type="string">Paypal\BraintreeBrasil\Gateway\Request\CreditCard\ChannelDataBuilder</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Authorize Response Handler Composite -->
+    <virtualType name="PaypalBraintreeBrasilCreditCardAuthorizationResponseHandler" type="Magento\Payment\Gateway\Response\HandlerChain">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="authorization" xsi:type="string">Paypal\BraintreeBrasil\Gateway\Response\CreditCard\AuthorizationHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Cancel Command -->
+    <virtualType name="PaypalBraintreeBrasilCreditCardCancelCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">PaypalBraintreeBrasilCreditCardCancelRequest</argument>
+            <argument name="transferFactory" xsi:type="object">Paypal\BraintreeBrasil\Gateway\Http\TransferFactory</argument>
+            <argument name="client" xsi:type="object">Paypal\BraintreeBrasil\Gateway\Http\Client\CreditCard\TransactionCancel</argument>
+            <argument name="validator" xsi:type="object">Paypal\BraintreeBrasil\Gateway\Validator\CreditCard\CancelValidator</argument>
+            <argument name="handler" xsi:type="object">PaypalBraintreeBrasilCreditCardCancelResponseHandler</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Cancel Request Builder Composite -->
+    <virtualType name="PaypalBraintreeBrasilCreditCardCancelRequest" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="cancel" xsi:type="string">Paypal\BraintreeBrasil\Gateway\Request\CreditCard\CancelDataBuilder</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Cancel Response Handler Composite -->
+    <virtualType name="PaypalBraintreeBrasilCreditCardCancelResponseHandler" type="Magento\Payment\Gateway\Response\HandlerChain">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="cancel" xsi:type="string">Paypal\BraintreeBrasil\Gateway\Response\CreditCard\CancelHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Capture Command -->
+    <virtualType name="PaypalBraintreeBrasilCreditCardCaptureCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">PaypalBraintreeBrasilCreditCardCaptureRequest</argument>
+            <argument name="transferFactory" xsi:type="object">Paypal\BraintreeBrasil\Gateway\Http\TransferFactory</argument>
+            <argument name="client" xsi:type="object">Paypal\BraintreeBrasil\Gateway\Http\Client\CreditCard\TransactionCapture</argument>
+            <argument name="validator" xsi:type="object">Paypal\BraintreeBrasil\Gateway\Validator\CreditCard\CaptureValidator</argument>
+            <argument name="handler" xsi:type="object">PaypalBraintreeBrasilCreditCardCaptureResponseHandler</argument>
+            <argument name="errorMessageMapper" xsi:type="object">Paypal\BraintreeBrasil\Gateway\Response\MessageMapper</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Capture Strategy Command definition -->
+    <virtualType name="PaypalBraintreeBrasilCreditCardCaptureStrategyCommand" type="Paypal\BraintreeBrasil\Gateway\Command\CaptureStrategyCommand">
+        <arguments>
+            <argument name="commandPool" xsi:type="object">PaypalBraintreeBrasilCreditCardCommandPool</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Capture Request Builder Composite -->
+    <virtualType name="PaypalBraintreeBrasilCreditCardCaptureRequest" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="capture" xsi:type="string">Paypal\BraintreeBrasil\Gateway\Request\CreditCard\CaptureDataBuilder</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Capture Response Handler Composite -->
+    <virtualType name="PaypalBraintreeBrasilCreditCardCaptureResponseHandler" type="Magento\Payment\Gateway\Response\HandlerChain">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="capture" xsi:type="string">Paypal\BraintreeBrasil\Gateway\Response\CreditCard\CaptureHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Refund Command -->
+    <virtualType name="PaypalBraintreeBrasilCreditCardRefundCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">PaypalBraintreeBrasilCreditCardRefundRequest</argument>
+            <argument name="transferFactory" xsi:type="object">Paypal\BraintreeBrasil\Gateway\Http\TransferFactory</argument>
+            <argument name="client" xsi:type="object">Paypal\BraintreeBrasil\Gateway\Http\Client\CreditCard\TransactionRefund</argument>
+            <argument name="validator" xsi:type="object">Paypal\BraintreeBrasil\Gateway\Validator\CreditCard\RefundValidator</argument>
+            <argument name="handler" xsi:type="object">PaypalBraintreeBrasilCreditCardRefundResponseHandler</argument>
+            <argument name="errorMessageMapper" xsi:type="object">Paypal\BraintreeBrasil\Gateway\Response\MessageMapper</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Refund Request Builder Composite -->
+    <virtualType name="PaypalBraintreeBrasilCreditCardRefundRequest" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="refund" xsi:type="string">Paypal\BraintreeBrasil\Gateway\Request\CreditCard\RefundDataBuilder</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Refund Response Handler Composite -->
+    <virtualType name="PaypalBraintreeBrasilCreditCardRefundResponseHandler" type="Magento\Payment\Gateway\Response\HandlerChain">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="refund" xsi:type="string">Paypal\BraintreeBrasil\Gateway\Response\CreditCard\RefundHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Value Handlers -->
+    <virtualType name="PaypalBraintreeBrasilCreditCardValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="default" xsi:type="string">PaypalBraintreeBrasilCreditCardValueHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="PaypalBraintreeBrasilCreditCardValueHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
+        <arguments>
+            <argument name="configInterface" xsi:type="object">PaypalBraintreeBrasilCreditCardConfig</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Validators Pool -->
+    <virtualType name="PaypalBraintreeBrasilCreditCardValidatorPool" type="Magento\Payment\Gateway\Validator\ValidatorPool">
+        <arguments>
+            <argument name="validators" xsi:type="array">
+                <item name="country" xsi:type="string">Paypal\BraintreeBrasil\Gateway\Validator\CountryValidator</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Config Interface -->
+    <virtualType name="PaypalBraintreeBrasilCreditCardConfig" type="Paypal\BraintreeBrasil\Gateway\Config\CreditCard\Config">
+        <arguments>
+            <argument name="methodCode" xsi:type="const">Paypal\BraintreeBrasil\Model\Ui\CreditCard\ConfigProvider::CODE</argument>
+        </arguments>
+    </virtualType>
+
+
+    <!-- ==== Cartão de Débito ==== -->
+
+    <type name="Magento\Checkout\Model\CompositeConfigProvider">
+        <arguments>
+            <argument name="configProviders" xsi:type="array">
+                <item name="paypal_braintree_brasil_debitcard_config" xsi:type="object">Paypal\BraintreeBrasil\Model\Ui\DebitCard\ConfigProvider</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <!-- Method Facade -->
+    <virtualType name="PaypalBraintreeBrasilDebitCardFacade" type="Magento\Payment\Model\Method\Adapter">
+        <arguments>
+            <argument name="code" xsi:type="const">\Paypal\BraintreeBrasil\Model\Ui\DebitCard\ConfigProvider::CODE</argument>
+            <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form</argument>
+            <argument name="infoBlockType" xsi:type="string">Paypal\BraintreeBrasil\Block\Info\DebitCard</argument>
+            <argument name="valueHandlerPool" xsi:type="object">PaypalBraintreeBrasilDebitCardValueHandlerPool</argument>
+            <argument name="validatorPool" xsi:type="object">PaypalBraintreeBrasilDebitCardValidatorPool</argument>
+            <argument name="commandPool" xsi:type="object">PaypalBraintreeBrasilDebitCardCommandPool</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Command Pool -->
+    <virtualType name="PaypalBraintreeBrasilDebitCardCommandPool" type="Magento\Payment\Gateway\Command\CommandPool">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="capture" xsi:type="string">PaypalBraintreeBrasilDebitCardAuthorizeAndCaptureCommand</item>
+                <item name="refund" xsi:type="string">PaypalBraintreeBrasilDebitCardRefundCommand</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Authorize Command -->
+    <virtualType name="PaypalBraintreeBrasilDebitCardAuthorizeAndCaptureCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">PaypalBraintreeBrasilDebitCardAuthorizationRequest</argument>
+            <argument name="transferFactory" xsi:type="object">Paypal\BraintreeBrasil\Gateway\Http\TransferFactory</argument>
+            <argument name="client" xsi:type="object">Paypal\BraintreeBrasil\Gateway\Http\Client\DebitCard\TransactionAuthorization</argument>
+            <argument name="validator" xsi:type="object">Paypal\BraintreeBrasil\Gateway\Validator\DebitCard\AuthorizationValidator</argument>
+            <argument name="handler" xsi:type="object">PaypalBraintreeBrasilDebitCardAuthorizationResponseHandler</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Authorize Request Builder Composite -->
+    <virtualType name="PaypalBraintreeBrasilDebitCardAuthorizationRequest" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="order" xsi:type="string">Paypal\BraintreeBrasil\Gateway\Request\OrderDataBuilder</item>
+                <item name="customer" xsi:type="string">Paypal\BraintreeBrasil\Gateway\Request\CustomerDataBuilder</item>
+                <item name="payment" xsi:type="string">Paypal\BraintreeBrasil\Gateway\Request\DebitCard\PaymentDataBuilder</item>
+                <item name="channel" xsi:type="string">Paypal\BraintreeBrasil\Gateway\Request\DebitCard\ChannelDataBuilder</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Authorize Response Handler Composite -->
+    <virtualType name="PaypalBraintreeBrasilDebitCardAuthorizationResponseHandler" type="Magento\Payment\Gateway\Response\HandlerChain">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="authorization" xsi:type="string">Paypal\BraintreeBrasil\Gateway\Response\DebitCard\AuthorizationHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Refund Command -->
+    <virtualType name="PaypalBraintreeBrasilDebitCardRefundCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">PaypalBraintreeBrasilDebitCardRefundRequest</argument>
+            <argument name="transferFactory" xsi:type="object">Paypal\BraintreeBrasil\Gateway\Http\TransferFactory</argument>
+            <argument name="client" xsi:type="object">Paypal\BraintreeBrasil\Gateway\Http\Client\DebitCard\TransactionRefund</argument>
+            <argument name="validator" xsi:type="object">Paypal\BraintreeBrasil\Gateway\Validator\DebitCard\RefundValidator</argument>
+            <argument name="handler" xsi:type="object">PaypalBraintreeBrasilDebitCardRefundResponseHandler</argument>
+            <argument name="errorMessageMapper" xsi:type="object">Paypal\BraintreeBrasil\Gateway\Response\MessageMapper</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Refund Request Builder Composite -->
+    <virtualType name="PaypalBraintreeBrasilDebitCardRefundRequest" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="refund" xsi:type="string">Paypal\BraintreeBrasil\Gateway\Request\DebitCard\RefundDataBuilder</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Refund Response Handler Composite -->
+    <virtualType name="PaypalBraintreeBrasilDebitCardRefundResponseHandler" type="Magento\Payment\Gateway\Response\HandlerChain">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="refund" xsi:type="string">Paypal\BraintreeBrasil\Gateway\Response\DebitCard\RefundHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Value Handlers -->
+    <virtualType name="PaypalBraintreeBrasilDebitCardValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="default" xsi:type="string">PaypalBraintreeBrasilDebitCardValueHandler</item>
+                <item name="payment_action" xsi:type="string">Paypal\BraintreeBrasil\Gateway\Config\DebitCard\PaymentActionValueHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="PaypalBraintreeBrasilDebitCardValueHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
+        <arguments>
+            <argument name="configInterface" xsi:type="object">PaypalBraintreeBrasilDebitCardConfig</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Validators Pool -->
+    <virtualType name="PaypalBraintreeBrasilDebitCardValidatorPool" type="Magento\Payment\Gateway\Validator\ValidatorPool">
+        <arguments>
+            <argument name="validators" xsi:type="array">
+                <item name="country" xsi:type="string">Paypal\BraintreeBrasil\Gateway\Validator\CountryValidator</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Config Interface -->
+    <virtualType name="PaypalBraintreeBrasilDebitCardConfig" type="Paypal\BraintreeBrasil\Gateway\Config\DebitCard\Config">
+        <arguments>
+            <argument name="methodCode" xsi:type="const">Paypal\BraintreeBrasil\Model\Ui\DebitCard\ConfigProvider::CODE</argument>
+        </arguments>
+    </virtualType>
+
+
+    <!-- ==== PayPal Wallet ==== -->
+
+    <type name="Magento\Checkout\Model\CompositeConfigProvider">
+        <arguments>
+            <argument name="configProviders" xsi:type="array">
+                <item name="paypal_braintree_brasil_paypal_wallet_config" xsi:type="object">Paypal\BraintreeBrasil\Model\Ui\PaypalWallet\ConfigProvider</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <!-- Method Facade -->
+    <virtualType name="PaypalBraintreeBrasilPaypalWalletFacade" type="Magento\Payment\Model\Method\Adapter">
+        <arguments>
+            <argument name="code" xsi:type="const">\Paypal\BraintreeBrasil\Model\Ui\PaypalWallet\ConfigProvider::CODE</argument>
+            <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form</argument>
+            <argument name="infoBlockType" xsi:type="string">Paypal\BraintreeBrasil\Block\Info\PaypalWallet</argument>
+            <argument name="valueHandlerPool" xsi:type="object">PaypalBraintreeBrasilPaypalWalletValueHandlerPool</argument>
+            <argument name="validatorPool" xsi:type="object">PaypalBraintreeBrasilPaypalWalletValidatorPool</argument>
+            <argument name="commandPool" xsi:type="object">PaypalBraintreeBrasilPaypalWalletCommandPool</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Command Pool -->
+    <virtualType name="PaypalBraintreeBrasilPaypalWalletCommandPool" type="Magento\Payment\Gateway\Command\CommandPool">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="authorize" xsi:type="string">PaypalBraintreeBrasilPaypalWalletAuthorizeCommand</item>
+                <item name="sale" xsi:type="string">PaypalBraintreeBrasilPaypalWalletAuthorizeCommand</item>
+                <item name="cancel" xsi:type="string">PaypalBraintreeBrasilPaypalWalletCancelCommand</item>
+                <item name="refund" xsi:type="string">PaypalBraintreeBrasilPaypalWalletRefundCommand</item>
+                <item name="capture" xsi:type="string">PaypalBraintreeBrasilPaypalWalletCaptureStrategyCommand</item>
+                <item name="settlement" xsi:type="string">PaypalBraintreeBrasilPaypalWalletCaptureCommand</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Authorize Command -->
+    <virtualType name="PaypalBraintreeBrasilPaypalWalletAuthorizeCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">PaypalBraintreeBrasilPaypalWalletAuthorizationRequest</argument>
+            <argument name="transferFactory" xsi:type="object">Paypal\BraintreeBrasil\Gateway\Http\TransferFactory</argument>
+            <argument name="client" xsi:type="object">Paypal\BraintreeBrasil\Gateway\Http\Client\PaypalWallet\TransactionAuthorization</argument>
+            <argument name="validator" xsi:type="object">Paypal\BraintreeBrasil\Gateway\Validator\PaypalWallet\AuthorizationValidator</argument>
+            <argument name="handler" xsi:type="object">PaypalBraintreeBrasilPaypalWalletAuthorizationResponseHandler</argument>
+            <argument name="errorMessageMapper" xsi:type="object">Paypal\BraintreeBrasil\Gateway\Response\MessageMapper</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Authorize Request Builder Composite -->
+    <virtualType name="PaypalBraintreeBrasilPaypalWalletAuthorizationRequest" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="order" xsi:type="string">Paypal\BraintreeBrasil\Gateway\Request\OrderDataBuilder</item>
+                <item name="customer" xsi:type="string">Paypal\BraintreeBrasil\Gateway\Request\CustomerDataBuilder</item>
+                <item name="payment_single" xsi:type="string">Paypal\BraintreeBrasil\Gateway\Request\PaypalWallet\PaymentSingleDataBuilder</item>
+                <item name="payment_with_installments" xsi:type="string">Paypal\BraintreeBrasil\Gateway\Request\PaypalWallet\PaymentWithInstallmentsDataBuilder</item>
+                <item name="channel" xsi:type="string">Paypal\BraintreeBrasil\Gateway\Request\PaypalWallet\ChannelDataBuilder</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Authorize Response Handler Composite -->
+    <virtualType name="PaypalBraintreeBrasilPaypalWalletAuthorizationResponseHandler" type="Magento\Payment\Gateway\Response\HandlerChain">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="braintree_transaction" xsi:type="string">Paypal\BraintreeBrasil\Gateway\Response\PaypalWallet\BraintreeAuthorizationHandler</item>
+                <item name="paypal_charge_transaction" xsi:type="string">Paypal\BraintreeBrasil\Gateway\Response\PaypalWallet\PaypalChargeAuthorizationHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Cancel Command -->
+    <virtualType name="PaypalBraintreeBrasilPaypalWalletCancelCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">PaypalBraintreeBrasilPaypalWalletCancelRequest</argument>
+            <argument name="transferFactory" xsi:type="object">Paypal\BraintreeBrasil\Gateway\Http\TransferFactory</argument>
+            <argument name="client" xsi:type="object">Paypal\BraintreeBrasil\Gateway\Http\Client\PaypalWallet\TransactionCancel</argument>
+            <argument name="validator" xsi:type="object">Paypal\BraintreeBrasil\Gateway\Validator\PaypalWallet\CancelValidator</argument>
+            <argument name="handler" xsi:type="object">PaypalBraintreeBrasilPaypalWalletCancelResponseHandler</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Cancel Request Builder Composite -->
+    <virtualType name="PaypalBraintreeBrasilPaypalWalletCancelRequest" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="cancel" xsi:type="string">Paypal\BraintreeBrasil\Gateway\Request\PaypalWallet\CancelDataBuilder</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Cancel Response Handler Composite -->
+    <virtualType name="PaypalBraintreeBrasilPaypalWalletCancelResponseHandler" type="Magento\Payment\Gateway\Response\HandlerChain">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="cancel" xsi:type="string">Paypal\BraintreeBrasil\Gateway\Response\PaypalWallet\CancelHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Capture Command -->
+    <virtualType name="PaypalBraintreeBrasilPaypalWalletCaptureCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">PaypalBraintreeBrasilPaypalWalletCaptureRequest</argument>
+            <argument name="transferFactory" xsi:type="object">Paypal\BraintreeBrasil\Gateway\Http\TransferFactory</argument>
+            <argument name="client" xsi:type="object">Paypal\BraintreeBrasil\Gateway\Http\Client\PaypalWallet\TransactionCapture</argument>
+            <argument name="validator" xsi:type="object">Paypal\BraintreeBrasil\Gateway\Validator\PaypalWallet\CaptureValidator</argument>
+            <argument name="handler" xsi:type="object">PaypalBraintreeBrasilPaypalWalletCaptureResponseHandler</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Capture Strategy Command definition -->
+    <virtualType name="PaypalBraintreeBrasilPaypalWalletCaptureStrategyCommand" type="Paypal\BraintreeBrasil\Gateway\Command\CaptureStrategyCommand">
+        <arguments>
+            <argument name="commandPool" xsi:type="object">PaypalBraintreeBrasilPaypalWalletCommandPool</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Capture Request Builder Composite -->
+    <virtualType name="PaypalBraintreeBrasilPaypalWalletCaptureRequest" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="capture" xsi:type="string">Paypal\BraintreeBrasil\Gateway\Request\PaypalWallet\CaptureDataBuilder</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Capture Response Handler Composite -->
+    <virtualType name="PaypalBraintreeBrasilPaypalWalletCaptureResponseHandler" type="Magento\Payment\Gateway\Response\HandlerChain">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="capture" xsi:type="string">Paypal\BraintreeBrasil\Gateway\Response\PaypalWallet\CaptureHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Refund Command -->
+    <virtualType name="PaypalBraintreeBrasilPaypalWalletRefundCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">PaypalBraintreeBrasilPaypalWalletRefundRequest</argument>
+            <argument name="transferFactory" xsi:type="object">Paypal\BraintreeBrasil\Gateway\Http\TransferFactory</argument>
+            <argument name="client" xsi:type="object">Paypal\BraintreeBrasil\Gateway\Http\Client\PaypalWallet\TransactionRefund</argument>
+            <argument name="validator" xsi:type="object">Paypal\BraintreeBrasil\Gateway\Validator\PaypalWallet\RefundValidator</argument>
+            <argument name="handler" xsi:type="object">PaypalBraintreeBrasilPaypalWalletRefundResponseHandler</argument>
+            <argument name="errorMessageMapper" xsi:type="object">Paypal\BraintreeBrasil\Gateway\Response\MessageMapper</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Refund Request Builder Composite -->
+    <virtualType name="PaypalBraintreeBrasilPaypalWalletRefundRequest" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="refund" xsi:type="string">Paypal\BraintreeBrasil\Gateway\Request\PaypalWallet\RefundDataBuilder</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Refund Response Handler Composite -->
+    <virtualType name="PaypalBraintreeBrasilPaypalWalletRefundResponseHandler" type="Magento\Payment\Gateway\Response\HandlerChain">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="refund" xsi:type="string">Paypal\BraintreeBrasil\Gateway\Response\PaypalWallet\RefundHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Value Handlers -->
+    <virtualType name="PaypalBraintreeBrasilPaypalWalletValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="default" xsi:type="string">PaypalBraintreeBrasilPaypalWalletValueHandler</item>
+                <item name="payment_action" xsi:type="string">Paypal\BraintreeBrasil\Gateway\Config\PaypalWallet\PaymentActionValueHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="PaypalBraintreeBrasilPaypalWalletValueHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
+        <arguments>
+            <argument name="configInterface" xsi:type="object">PaypalBraintreeBrasilPaypalWalletConfig</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Validators Pool -->
+    <virtualType name="PaypalBraintreeBrasilPaypalWalletValidatorPool" type="Magento\Payment\Gateway\Validator\ValidatorPool">
+        <arguments>
+            <argument name="validators" xsi:type="array">
+                <item name="country" xsi:type="string">Paypal\BraintreeBrasil\Gateway\Validator\CountryValidator</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Config Interface -->
+    <virtualType name="PaypalBraintreeBrasilPaypalWalletConfig" type="Paypal\BraintreeBrasil\Gateway\Config\PaypalWallet\Config">
+        <arguments>
+            <argument name="methodCode" xsi:type="const">Paypal\BraintreeBrasil\Model\Ui\PaypalWallet\ConfigProvider::CODE</argument>
+        </arguments>
+    </virtualType>
+
+</config>

@@ -1,0 +1,108 @@
+<?xml version="1.0"?>
+<include xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_include.xsd">
+
+    <group id="attributes_mapping" translate="label" type="text" sortOrder="200" showInDefault="1" showInWebsite="1" showInStore="1">
+        <label>Customer attributes mapping</label>
+
+        <!-- fields for logged customer -->
+
+        <field id="customer_company_loggedin" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Attribute for field 'Company' from logged customer</label>
+            <source_model>Paypal\BraintreeBrasil\Model\Config\Source\CustomerAttributes</source_model>
+            <config_path>paypal_braintree_brasil/attributes_mapping/customer_company_loggedin</config_path>
+        </field>
+
+        <field id="customer_cpf_loggedin" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Attribute for field 'CPF' from logged customer</label>
+            <source_model>Paypal\BraintreeBrasil\Model\Config\Source\CustomerAttributes</source_model>
+            <config_path>paypal_braintree_brasil/attributes_mapping/customer_cpf_loggedin</config_path>
+        </field>
+
+        <field id="customer_cnpj_loggedin" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Attribute for field 'CNPJ' from logged customer</label>
+            <source_model>Paypal\BraintreeBrasil\Model\Config\Source\CustomerAttributes</source_model>
+            <config_path>paypal_braintree_brasil/attributes_mapping/customer_cnpj_loggedin</config_path>
+        </field>
+
+        <field id="customer_website_loggedin" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Attribute for field 'Website' from logged customer</label>
+            <source_model>Paypal\BraintreeBrasil\Model\Config\Source\CustomerAttributes</source_model>
+            <config_path>paypal_braintree_brasil/attributes_mapping/customer_website_loggedin</config_path>
+        </field>
+
+        <field id="customer_telephone_loggedin" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Attribute for field 'Telephone' from logged customer</label>
+            <source_model>Paypal\BraintreeBrasil\Model\Config\Source\CustomerAttributes</source_model>
+            <config_path>paypal_braintree_brasil/attributes_mapping/customer_telephone_loggedin</config_path>
+        </field>
+
+        <field id="customer_fax_loggedin" translate="label" type="select" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Attribute for field 'Fax' from logged customer</label>
+            <source_model>Paypal\BraintreeBrasil\Model\Config\Source\CustomerAttributes</source_model>
+            <config_path>paypal_braintree_brasil/attributes_mapping/customer_fax_loggedin</config_path>
+        </field>
+
+        <!-- fields for guest checkout -->
+        <field id="customer_company_guest" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Attribute for field 'Company' from guest customer</label>
+            <source_model>Paypal\BraintreeBrasil\Model\Config\Source\CustomerAttributes</source_model>
+            <config_path>paypal_braintree_brasil/attributes_mapping/customer_company_guest</config_path>
+        </field>
+
+        <field id="customer_cpf_guest" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Attribute for field 'CPF' from guest customer</label>
+            <source_model>Paypal\BraintreeBrasil\Model\Config\Source\CustomerAttributes</source_model>
+            <config_path>paypal_braintree_brasil/attributes_mapping/customer_cpf_guest</config_path>
+        </field>
+
+        <field id="customer_cnpj_guest" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Attribute for field 'CNPJ' from guest customer</label>
+            <source_model>Paypal\BraintreeBrasil\Model\Config\Source\CustomerAttributes</source_model>
+            <config_path>paypal_braintree_brasil/attributes_mapping/customer_cnpj_guest</config_path>
+        </field>
+
+        <field id="customer_website_guest" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Attribute for field 'Website' from guest customer</label>
+            <source_model>Paypal\BraintreeBrasil\Model\Config\Source\CustomerAttributes</source_model>
+            <config_path>paypal_braintree_brasil/attributes_mapping/customer_website_guest</config_path>
+        </field>
+
+        <field id="customer_telephone_guest" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Attribute for field 'Telephone' from guest customer</label>
+            <source_model>Paypal\BraintreeBrasil\Model\Config\Source\CustomerAttributes</source_model>
+            <config_path>paypal_braintree_brasil/attributes_mapping/customer_telephone_guest</config_path>
+        </field>
+
+        <field id="customer_fax_guest" translate="label" type="select" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Attribute for field 'Fax' from guest customer</label>
+            <source_model>Paypal\BraintreeBrasil\Model\Config\Source\CustomerAttributes</source_model>
+            <config_path>paypal_braintree_brasil/attributes_mapping/customer_fax_guest</config_path>
+        </field>
+
+        <!-- fields for default billing address street lines -->
+
+        <field id="address_street" translate="label" type="select" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Attribute for field 'Street' from customer address</label>
+            <source_model>Paypal\BraintreeBrasil\Model\Config\Source\CustomerAttributes</source_model>
+            <config_path>paypal_braintree_brasil/attributes_mapping/address_street</config_path>
+        </field>
+
+        <field id="address_street_number" translate="label" type="select" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Attribute for field 'Street Number' from customer address</label>
+            <source_model>Paypal\BraintreeBrasil\Model\Config\Source\CustomerAttributes</source_model>
+            <config_path>paypal_braintree_brasil/attributes_mapping/address_street_number</config_path>
+        </field>
+
+        <field id="address_complementary" translate="label" type="select" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Attribute for field 'Complement' from customer address</label>
+            <source_model>Paypal\BraintreeBrasil\Model\Config\Source\CustomerAttributes</source_model>
+            <config_path>paypal_braintree_brasil/attributes_mapping/address_complementary</config_path>
+        </field>
+
+        <field id="address_neighborhood" translate="label" type="select" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Attribute for field 'Neighborhood' from customer address</label>
+            <source_model>Paypal\BraintreeBrasil\Model\Config\Source\CustomerAttributes</source_model>
+            <config_path>paypal_braintree_brasil/attributes_mapping/address_neighborhood</config_path>
+        </field>
+    </group>
+</include>

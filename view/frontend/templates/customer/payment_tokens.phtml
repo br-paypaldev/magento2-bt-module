@@ -1,0 +1,69 @@
+<?php /** @var \Paypal\BraintreeBrasil\Block\Customer\PaymentTokens $block */ ?>
+
+<h2><?php echo __('My saved cards') ?></h2>
+
+<?php if(count($block->getPaymentTokens())): ?>
+    <?php if ($block->getPagerHtml()): ?>
+        <div class="toolbar top"><?php echo $block->getPagerHtml(); ?></div>
+    <?php endif ?>
+    <table class="data table">
+        <thead>
+            <tr>
+                <th><?php echo __('Card type') ?></th>
+                <th><?php echo __('Card brand') ?></th>
+                <th><?php echo __('Card number') ?></th>
+                <th><?php echo __('Card expiration') ?></th>
+                <th><?php echo __('Created at') ?></th>
+                <th><?php echo __('Actions') ?></th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach($block->getPaymentTokens() as $paymentToken): ?>
+                <tr>
+                    <td><?php echo $block->getTypeLabel($paymentToken->getType()) ?></td>
+                    <td><?php echo $paymentToken->getCardBrand() ?></td>
+                    <td>XXXX-XXXX-XXXX-<?php echo $paymentToken->getCardLastFour() ?></td>
+                    <td><?php echo $paymentToken->getCardExpMonth() ?>/<?php echo $paymentToken->getCardExpYear() ?></td>
+                    <td><?php echo $block->formatDate($paymentToken->getCreatedAt()) ?></td>
+                    <td>
+                        <a href="#" class="remove-payment-token"
+                            data-href="<?php echo $block->getUrl('braintree_brasil/customer/removepaymenttoken', [
+                            'id' => $paymentToken->getEntityId()
+                        ]) ?>">
+                            <?php echo __('Remove card') ?>
+                        </a>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+    <?php if ($block->getPagerHtml()): ?>
+        <div class="toolbar top"><?php echo $block->getPagerHtml(); ?></div>
+    <?php endif ?>
+<?php else: ?>
+    <div class="message info empty">
+        <span><?php echo __('You have no stored cards.') ?></span>
+    </div>
+<?php endif; ?>
+
+<script type="text/javascript">
+    require([
+        'jquery',
+        'Magento_Ui/js/modal/confirm'
+    ], function($, confirmation) {
+        $('.remove-payment-token').click(function(e){
+            e.preventDefault();
+
+            var el = $(this);
+            confirmation({
+                title: $.mage.__('Did you sure?'),
+                content: $.mage.__('This action cannot be undone'),
+                actions: {
+                    confirm: function(){
+                        document.location.href = el.attr('data-href')
+                    }
+                }
+            });
+        })
+    });
+</script>

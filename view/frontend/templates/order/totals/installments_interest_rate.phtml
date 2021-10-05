@@ -1,0 +1,17 @@
+<?php
+/** @var \Paypal\BraintreeBrasil\Block\Sales\Order\Totals\InstallmentsInterestRate $block */
+$_order  = $block->getOrder();
+$_source = $block->getSource();
+?>
+<?php if ((float)$_source->getInstallmentsInterestRate()) : ?>
+    <tr>
+        <td <?= /* @noEscape */ $block->getLabelProperties() ?> class="col name">
+            <?= $block->escapeHtml(__('Installments interest rate')) ?>
+        </td>
+        <td <?= /* @noEscape */ $block->getValueProperties() ?> class="col price">
+            <span>
+                <?= /* @noEscape */ $_order->formatPrice($_source->getInstallmentsInterestRate()) ?>
+            </span>
+        </td>
+    </tr>
+<?php endif; ?>

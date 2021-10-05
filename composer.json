@@ -1,0 +1,27 @@
+{
+    "name": "paypal/module-braintree-brasil",
+    "description": "N/A",
+    "type": "magento2-module",
+    "license": [
+        "OSL-3.0",
+        "AFL-3.0"
+    ],
+    "require": {
+        "php": "~7.3.0||~7.4.0",
+        "braintree/braintree_php" : "6.2.0"
+    },
+    "replace": {
+        "braintree/braintree": "*",
+        "paypal/module-braintree": "*",
+        "paypal/module-braintree-core": "*",
+        "paypal/module-braintree-graph-ql": "*"
+    },
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Paypal\\BraintreeBrasil\\": ""
+        }
+    }
+}

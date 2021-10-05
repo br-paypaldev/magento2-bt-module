@@ -1,0 +1,32 @@
+<?php /** @var \Magento\Framework\Escaper $escaper */ ?>
+<?php /** @var \Paypal\BraintreeBrasil\Block\Info\DebitCard $block */ ?>
+<?php $additionalInformation = $block->getInfo()->getAdditionalInformation(); ?>
+<p><?= $escaper->escapeHtml($block->getMethod()->getTitle()) ?></p>
+
+
+<table class="admin__table-secondary order-information-table">
+    <tr>
+        <th class="label">
+            <?php echo __('Braintree Transaction ID') ?>
+        </th>
+        <td class="value">
+            <?= $escaper->escapeHtml($block->getTransactionId()) ?>
+        </td>
+    </tr>
+    <tr>
+        <th class="label">
+            <?php echo __('Card Number') ?>
+        </th>
+        <td class="value">
+            XXXX-XXXX-XXXX-<?= $escaper->escapeHtml($additionalInformation['dc_last']) ?>
+        </td>
+    </tr>
+    <tr>
+        <th class="label">
+            <?php echo __('Card Brand') ?>
+        </th>
+        <td class="value">
+            <?= $escaper->escapeHtml($additionalInformation['dc_type']) ?>
+        </td>
+    </tr>
+</table>

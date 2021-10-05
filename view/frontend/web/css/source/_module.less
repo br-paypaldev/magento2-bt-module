@@ -1,0 +1,30 @@
+.payment-method-paypal-braintree-brasil-creditcard,
+.payment-method-paypal-braintree-brasil-debitcard {
+    .input-cc-hosted-field,
+    .input-dc-hosted-field {
+        display: block;
+        border: 1px solid #ccc;
+        border-radius: 2px;
+        height: 32px;
+        padding: 4px 25px 5px 10px;
+        &.cc-expiration,
+        &.dc-expiration{
+            width: 80px
+        }
+        &.cc-cvv,
+        &.dc-cvv{
+            width: 80px
+        }
+        &.is-invalid {
+            border-color: red
+        }
+    }
+    .group-inline-fields {
+        overflow: hidden;
+        margin-bottom: 15px;
+        .field {
+            width: 25%;
+            float: left;
+        }
+    }
+}
