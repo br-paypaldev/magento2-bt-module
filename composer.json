@@ -1,5 +1,5 @@
 {
-    "name": "paypal/module-braintree-brasil",
+    "name": "br-paypaldev/module-braintree-brasil",
     "description": "N/A",
     "type": "magento2-module",
     "license": [
