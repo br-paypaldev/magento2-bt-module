@@ -6,9 +6,9 @@ Página oficial do módulo Braintree com as soluções utilizadas no mercado Bra
 ## Descrição
 
 Este módulo contém os principais produtos PayPal para o mercado Brasileiro:
-- **Checkout com Cartão de Crédito**: Checkout transparente aonde o cliente paga somente utilizando o seu cartão de crédito, sem a necessidade de ter uma conta PayPal.
-- **Checkout com Cartão de Débito**: Checkout transparente aonde o cliente paga somente utilizando o seu cartão de Débito, sem a necessidade de ter uma conta PayPal.
-- **Smart Payment Button (Novo Express Checkout)**: Solução de carteira digital aonde o cliente paga com a sua conta PayPal ou cria uma no momento da compra.
+- **Checkout com Cartão de Crédito**: O cliente paga somente utilizando o seu cartão de crédito, sem a necessidade de ter uma conta PayPal.
+- **Checkout com Cartão de Débito**: O cliente paga somente utilizando o seu cartão de Débito, sem a necessidade de ter uma conta PayPal.
+- **Smart Payment Button (Novo Express Checkout)**: O cliente paga com a sua conta PayPal ou cria uma no momento da compra.
 
 ## Requisitos
 
