@@ -36,7 +36,7 @@ Para instalar, adicione as seguintes linhas ao seu composer.json:
 ```
 Ou simplesmente digite  o comando abaixo:
 ```
-ccomposer require br-paypaldev/module-braintree-brasil --no-update
+composer require br-paypaldev/module-braintree-brasil --no-update
 
 ```
 
