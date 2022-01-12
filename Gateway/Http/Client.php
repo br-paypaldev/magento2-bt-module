@@ -1,4 +1,5 @@
 <?php
+
 namespace Paypal\BraintreeBrasil\Gateway\Http;
 
 use Braintree\Exception\NotFound as BraintreeExceptionNotFound;
@@ -28,12 +29,10 @@ class Client
      * @param Logger $logger
      * @param Config $braintreeConfig
      */
-    public function __construct
-    (
+    public function __construct(
         Logger $logger,
         Config $braintreeConfig
-    )
-    {
+    ) {
         $this->braintreeConfig = $braintreeConfig;
         $this->logger = $logger;
     }
@@ -43,13 +42,15 @@ class Client
      */
     public function getBraintreeClient()
     {
-        if(!$this->braintree_client){
-            $this->braintree_client = new BraintreeGateway([
-                'environment' => $this->braintreeConfig->getIntegrationMode(),
-                'merchantId' => $this->braintreeConfig->getMerchantId(),
-                'publicKey' => $this->braintreeConfig->getPublicKey(),
-                'privateKey' => $this->braintreeConfig->getPrivateKey()
-            ]);
+        if (!$this->braintree_client) {
+            $this->braintree_client = new BraintreeGateway(
+                [
+                    'environment' => $this->braintreeConfig->getIntegrationMode(),
+                    'merchantId' => $this->braintreeConfig->getMerchantId(),
+                    'publicKey' => $this->braintreeConfig->getPublicKey(),
+                    'privateKey' => $this->braintreeConfig->getPrivateKey()
+                ]
+            );
         }
 
         return $this->braintree_client;
@@ -60,14 +61,14 @@ class Client
      */
     public function getClientToken()
     {
-        if(!$this->client_token){
-            if(!$this->braintreeConfig->validateConfiguration()){
+        if (!$this->client_token) {
+            if (!$this->braintreeConfig->validateConfiguration()) {
                 return '';
             }
 
             try {
                 $this->client_token = $this->getBraintreeClient()->clientToken()->generate();
-            } catch (\Exception $e){
+            } catch (\Exception $e) {
                 $this->logger->critical('Generate client token error', [$e->getMessage()]);
             }
         }
@@ -85,8 +86,7 @@ class Client
      * @param string|null $fax
      * @param string|null $company
      */
-    public function createBraintreeCustomerIfNotExists
-    (
+    public function createBraintreeCustomerIfNotExists(
         $braintree_customer_id,
         $firstname,
         $lastname,
@@ -94,26 +94,27 @@ class Client
         $telephone,
         $fax = null,
         $company = null
-    )
-    {
+    ) {
         try {
             // find fo customer
             $customer = $this->getBraintreeClient()
                 ->customer()
                 ->find($braintree_customer_id);
-        } catch (BraintreeExceptionNotFound $e){
+        } catch (BraintreeExceptionNotFound $e) {
             // create when not found
             $this->getBraintreeClient()
                 ->customer()
-                ->create([
-                    'id' => $braintree_customer_id,
-                    'firstName' => $firstname,
-                    'lastName' => $lastname,
-                    'email' => $email,
-                    'phone' => $telephone,
-                    'fax' => $fax,
-                    'company' => $company
-                ]);
+                ->create(
+                    [
+                        'id' => $braintree_customer_id,
+                        'firstName' => $firstname,
+                        'lastName' => $lastname,
+                        'email' => $email,
+                        'phone' => $telephone,
+                        'fax' => $fax,
+                        'company' => $company
+                    ]
+                );
 
             $customer = $this->getBraintreeClient()
                 ->customer()

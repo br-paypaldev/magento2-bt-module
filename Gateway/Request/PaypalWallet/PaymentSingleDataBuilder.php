@@ -71,6 +71,10 @@ class PaymentSingleDataBuilder implements BuilderInterface
             ]
         ];
 
+        if ($this->paypalConfig->getMerchantAccountId()) {
+            $request['merchantAccountId'] = $this->paypalConfig->getMerchantAccountId();
+        }
+
         return $request;
     }
 }

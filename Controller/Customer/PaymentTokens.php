@@ -1,4 +1,5 @@
 <?php
+
 namespace Paypal\BraintreeBrasil\Controller\Customer;
 
 use Magento\Customer\Model\Session;
@@ -43,7 +44,7 @@ class PaymentTokens implements HttpGetActionInterface
      */
     public function execute()
     {
-        if(!$this->customerSession->isLoggedIn()){
+        if (!$this->customerSession->isLoggedIn()) {
             $redirect = $this->redirectFactory->create();
             $redirect->setPath('customer/account/login');
             return $redirect;

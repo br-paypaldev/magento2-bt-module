@@ -1,6 +1,7 @@
 <?php
 namespace Paypal\BraintreeBrasil\Gateway\Request;
 
+use Magento\Sales\Model\Order;
 use Paypal\BraintreeBrasil\Gateway\Config\Config;
 use Paypal\BraintreeBrasil\Logger\Logger;
 use Magento\Checkout\Model\Session;
@@ -48,6 +49,7 @@ class OrderDataBuilder implements BuilderInterface
         $this->logger->info('Order Data Builder');
 
         $payment = $paymentDataObject->getPayment();
+        /** @var Order $order */
         $order = $payment->getOrder();
 
         try {
@@ -56,6 +58,10 @@ class OrderDataBuilder implements BuilderInterface
                 'merchantAccountId' => $this->baseConfig->getMerchantAccountId(),
                 'amount' => round($order->getGrandTotal(), 2),
             ];
+
+            if (!$order->getIsVirtual()) {
+                $request['shippingAmount'] = $order->getShippingAmount();
+            }
 
         } catch (\Exception $e) {
             throw new LocalizedException(__($e->getMessage()));

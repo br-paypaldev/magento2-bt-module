@@ -1,4 +1,5 @@
 <?php
+
 namespace Paypal\BraintreeBrasil\Logger;
 
 use Paypal\BraintreeBrasil\Gateway\Config\Config;
@@ -23,15 +24,13 @@ class Logger extends \Monolog\Logger
      * @param StoreResolver $storeResolver
      * @param Config $braintreeConfig
      */
-    public function __construct
-    (
+    public function __construct(
         $name,
-        array $handlers = array(),
-        array $processors = array(),
         StoreResolver $storeResolver,
-        Config $braintreeConfig
-    )
-    {
+        Config $braintreeConfig,
+        array $handlers = array(),
+        array $processors = array()
+    ) {
         parent::__construct($name, $handlers, $processors);
         $this->braintreeConfig = $braintreeConfig;
         $this->storeResolver = $storeResolver;

@@ -1,28 +1,29 @@
 <?php
+
 namespace Paypal\BraintreeBrasil\Gateway\Validator\CreditCard;
 
-use Paypal\BraintreeBrasil\Logger\Logger;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Validator\AbstractValidator;
 use Magento\Payment\Gateway\Validator\ResultInterface;
 use Magento\Payment\Gateway\Validator\ResultInterfaceFactory;
+use Paypal\BraintreeBrasil\Logger\Logger;
 
 class AuthorizationValidator extends AbstractValidator
 {
+    /**
+     * @var Logger
+     */
     protected $logger;
-    protected $eventManager;
 
     /**
-     * AuthorizationValidator constructor.
-     *
      * @param ResultInterfaceFactory $resultFactory
+     * @param Logger $logger
      */
     public function __construct(
         ResultInterfaceFactory $resultFactory,
         Logger $logger
     ) {
         $this->logger = $logger;
-
         parent::__construct($resultFactory);
     }
 
@@ -53,7 +54,7 @@ class AuthorizationValidator extends AbstractValidator
                 \Braintree\Transaction::SUBMITTED_FOR_SETTLEMENT
             ];
 
-            if (!$result->success && $result->transaction){
+            if (!$result->success && $result->transaction) {
                 if (!in_array($result->transaction->status, $transactionSuccessStatuses)) {
                     $errorMessage = __('Erro ao tentar autorizar o pagamento');
 

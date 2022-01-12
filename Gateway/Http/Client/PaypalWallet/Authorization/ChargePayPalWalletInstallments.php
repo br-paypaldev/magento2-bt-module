@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Paypal\BraintreeBrasil\Gateway\Http\Client\PaypalWallet\Authorization;
@@ -21,12 +22,10 @@ class ChargePayPalWalletInstallments
      * @param Config $braintreeConfig
      * @param PaypalGraphQL $paypalGraphQLClient
      */
-    public function __construct
-    (
+    public function __construct(
         Config $braintreeConfig,
         PaypalGraphQL $paypalGraphQLClient
-    )
-    {
+    ) {
         $this->paypalGraphQLClient = $paypalGraphQLClient;
         $this->braintreeConfig = $braintreeConfig;
     }
@@ -38,10 +37,22 @@ class ChargePayPalWalletInstallments
      * @param $amount
      * @param $installments
      * @param $financingOptionMonthlyPayment
+     * @param $lineItems
+     * @param $shipping
+     * @param $shippingAmount
+     * @param $merchantAccountId
      * @return mixed
      */
-    public function execute($paymentMethodId, $amount, $installments, $financingOptionMonthlyPayment)
-    {
+    public function execute(
+        $paymentMethodId,
+        $amount,
+        $installments,
+        $financingOptionMonthlyPayment,
+        $lineItems,
+        $shipping,
+        $shippingAmount,
+        $merchantAccountId
+    ) {
         $query = 'mutation ChargePayPalAccount($input: ChargePayPalAccountInput!) {
               chargePayPalAccount(input: $input) {
                 transaction {
@@ -76,11 +87,29 @@ class ChargePayPalWalletInstallments
               }
             }';
 
+        foreach ($lineItems as &$item) {
+            $item['kind'] = strtoupper($item['kind']);
+        }
+
+        $shipping['countryCode'] = $shipping['countryCodeAlpha2'];
+        unset(
+            $shipping['countryCodeAlpha2'],
+            $shipping['countryCodeAlpha3'],
+            $shipping['countryCodeNumeric'],
+            $shipping['countryName']
+        );
+
         $variables = [
             'input' => [
                 'paymentMethodId' => $paymentMethodId,
                 'transaction' => [
-                    'amount' => $amount
+                    'amount' => $amount,
+                    'lineItems' => $lineItems,
+                    'shipping' => [
+                        'shippingAddress' => $shipping,
+                        'shippingAmount' => $shippingAmount
+                    ],
+                    'merchantAccountId' => $merchantAccountId
                 ],
                 'options' => [
                     'selectedFinancingOption' => [

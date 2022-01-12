@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<include xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_include.xsd">
+    <group id="merchant_account_id" translate="label" type="text" sortOrder="600" showInDefault="1" showInWebsite="1" showInStore="1">
+        <label>Merchant Account Id Configuration</label>
+
+        <field id="ids" translate="label" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Merchant Account Ids</label>
+            <frontend_model>Paypal\BraintreeBrasil\Block\Adminhtml\Form\Field\MerchantIds</frontend_model>
+            <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
+            <config_path>paypal_braintree_brasil/merchant_account_id/ids</config_path>
+        </field>
+
+    </group>
+</include>

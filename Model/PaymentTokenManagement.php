@@ -1,10 +1,11 @@
 <?php
+
 namespace Paypal\BraintreeBrasil\Model;
 
-use Paypal\BraintreeBrasil\Api\PaymentTokenManagementInterface;
 use Magento\Customer\Model\Session;
 use Magento\Framework\Api\FilterBuilder;
 use Magento\Framework\Api\Search\SearchCriteriaBuilder;
+use Paypal\BraintreeBrasil\Api\PaymentTokenManagementInterface;
 
 class PaymentTokenManagement implements PaymentTokenManagementInterface
 {
@@ -32,14 +33,12 @@ class PaymentTokenManagement implements PaymentTokenManagementInterface
      * @param PaymentTokenRepository $paymentTokenRepository
      * @param Session $customerSession
      */
-    public function __construct
-    (
+    public function __construct(
         SearchCriteriaBuilder $searchCriteriaBuilder,
         FilterBuilder $filterBuilder,
         PaymentTokenRepository $paymentTokenRepository,
         Session $customerSession
-    )
-    {
+    ) {
         $this->customerSession = $customerSession;
         $this->paymentTokenRepository = $paymentTokenRepository;
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
@@ -56,7 +55,7 @@ class PaymentTokenManagement implements PaymentTokenManagementInterface
 
         $result = [];
 
-        if((int)$customerId){
+        if ((int)$customerId) {
             $customerFilter = $this->filterBuilder
                 ->setField('customer_id')
                 ->setConditionType('eq')
@@ -76,7 +75,7 @@ class PaymentTokenManagement implements PaymentTokenManagementInterface
             $paymentTokenSearchResult = $this->paymentTokenRepository
                 ->getList($searchCriteria);
 
-            foreach($paymentTokenSearchResult->getItems() as $item){
+            foreach ($paymentTokenSearchResult->getItems() as $item) {
                 $item->setToken(null);
                 $result[] = $item;
             }
@@ -93,7 +92,7 @@ class PaymentTokenManagement implements PaymentTokenManagementInterface
     {
         $result = [];
 
-        if((int)$customer_id){
+        if ((int)$customer_id) {
             $customerFilter = $this->filterBuilder
                 ->setField('customer_id')
                 ->setConditionType('eq')
@@ -106,7 +105,7 @@ class PaymentTokenManagement implements PaymentTokenManagementInterface
             $paymentTokenSearchResult = $this->paymentTokenRepository
                 ->getList($searchCriteria);
 
-            foreach($paymentTokenSearchResult->getItems() as $item){
+            foreach ($paymentTokenSearchResult->getItems() as $item) {
                 $result[] = $item;
             }
         }

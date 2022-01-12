@@ -1,54 +1,42 @@
 <?php
+
 namespace Paypal\BraintreeBrasil\Gateway\Response\CreditCard;
 
-use Paypal\BraintreeBrasil\Gateway\Config\CreditCard\Config;
-use Paypal\BraintreeBrasil\Logger\Logger;
-use Paypal\BraintreeBrasil\Model\CreditCardManagement;
-use Paypal\BraintreeBrasil\Model\PaymentTokenRepository;
-use Paypal\BraintreeBrasil\Model\Ui\CreditCard\ConfigProvider;
-use Paypal\BraintreeBrasil\Observer\CreditCard\DataAssignObserver;
 use Magento\Framework\Event\Manager;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Response\HandlerInterface;
+use Paypal\BraintreeBrasil\Logger\Logger;
+use Paypal\BraintreeBrasil\Model\PaymentTokenRepository;
+use Paypal\BraintreeBrasil\Observer\CreditCard\DataAssignObserver;
 
 class AuthorizationHandler implements HandlerInterface
 {
+    /**
+     * @var Logger
+     */
     protected $logger;
-    /**
-     * @var Config
-     */
-    private $creditCardConfig;
-    /**
-     * @var CreditCardManagement
-     */
-    private $installmentsManagement;
+
     /**
      * @var Manager
      */
     private $eventManager;
+
     /**
      * @var PaymentTokenRepository
      */
     private $paymentTokenRepository;
 
     /**
-     * AuthorizationHandler constructor.
-     * @param Config $creditCardConfig
-     * @param CreditCardManagement $installmentsManagement
      * @param PaymentTokenRepository $paymentTokenRepository
      * @param Manager $eventManager
      * @param Logger $logger
      */
     public function __construct(
-        Config $creditCardConfig,
-        CreditCardManagement $installmentsManagement,
         PaymentTokenRepository $paymentTokenRepository,
         Manager $eventManager,
         Logger $logger
     ) {
         $this->logger = $logger;
-        $this->creditCardConfig = $creditCardConfig;
-        $this->installmentsManagement = $installmentsManagement;
         $this->eventManager = $eventManager;
         $this->paymentTokenRepository = $paymentTokenRepository;
     }
@@ -81,7 +69,7 @@ class AuthorizationHandler implements HandlerInterface
             );
 
             // add payment token data to additional information
-            if($response['payment_token_id']){
+            if ($response['payment_token_id']) {
                 $paymentToken = $this->paymentTokenRepository->get($response['payment_token_id']);
                 $payment->setAdditionalInformation('cc_type', $paymentToken->getCardBrand());
                 $payment->setAdditionalInformation('cc_last', $paymentToken->getCardLastFour());
@@ -98,12 +86,11 @@ class AuthorizationHandler implements HandlerInterface
 
             $payment->getOrder()->setCanSendNewEmailFlag(true);
 
-            if($response['save_cc']){
+            if ($response['save_cc']) {
                 $this->eventManager->dispatch('braintree_brasil_creditcard_save_payment_token', [
                     'braintree_transaction' => $paymentResult->transaction
                 ]);
             }
-
         } catch (\Exception $e) {
             $this->logger->info('AUTHORIZATION HANDLER ERROR', [$e->getMessage()]);
         }

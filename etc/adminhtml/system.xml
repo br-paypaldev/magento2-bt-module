@@ -10,6 +10,7 @@
                 <include path="Paypal_BraintreeBrasil::system/creditcard.xml"/>
                 <include path="Paypal_BraintreeBrasil::system/debitcard.xml"/>
                 <include path="Paypal_BraintreeBrasil::system/paypal_wallet.xml"/>
+                <include path="Paypal_BraintreeBrasil::system/merchant_account_id.xml"/>
 
             </group>
         </section>

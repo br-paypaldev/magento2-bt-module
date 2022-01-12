@@ -15,14 +15,18 @@
             <config_path>payment/paypal_braintree_brasil_creditcard/title</config_path>
         </field>
 
-        <field id="sandbox_merchant_account_id" translate="label" type="text" sortOrder="35" showInDefault="1" showInWebsite="1" showInStore="1">
+        <field id="sandbox_merchant_account_id" translate="label" type="select" sortOrder="35" showInDefault="1" showInWebsite="1" showInStore="1">
             <label>Use a different Merchant Account ID (sandbox)</label>
+            <source_model>Paypal\BraintreeBrasil\Model\Config\Source\MerchantAccountId</source_model>
             <config_path>payment/paypal_braintree_brasil_creditcard/sandbox_merchant_account_id</config_path>
+            <comment>If options are not showing, review 'Merchant Account Id Configuration' section and add options there</comment>
         </field>
 
-        <field id="production_merchant_account_id" translate="label" type="text" sortOrder="35" showInDefault="1" showInWebsite="1" showInStore="1">
+        <field id="production_merchant_account_id" translate="label" type="select" sortOrder="35" showInDefault="1" showInWebsite="1" showInStore="1">
             <label>Use a different Merchant Account ID (production)</label>
+            <source_model>Paypal\BraintreeBrasil\Model\Config\Source\MerchantAccountId</source_model>
             <config_path>payment/paypal_braintree_brasil_creditcard/production_merchant_account_id</config_path>
+            <comment>If options are not showing, review 'Merchant Account Id Configuration' section and add options there</comment>
         </field>
 
         <field id="enable_installments" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">

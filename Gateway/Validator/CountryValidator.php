@@ -1,10 +1,11 @@
 <?php
+
 namespace Paypal\BraintreeBrasil\Gateway\Validator;
 
-use Paypal\BraintreeBrasil\Logger\Logger;
 use Magento\Framework\Exception\NotFoundException;
 use Magento\Payment\Gateway\Validator\AbstractValidator;
 use Magento\Payment\Gateway\Validator\ResultInterfaceFactory;
+use Paypal\BraintreeBrasil\Logger\Logger;
 
 class CountryValidator extends AbstractValidator
 {
@@ -18,12 +19,10 @@ class CountryValidator extends AbstractValidator
      * @param Logger $logger
      * @param ResultInterfaceFactory $resultFactory
      */
-    public function __construct
-    (
+    public function __construct(
         Logger $logger,
         ResultInterfaceFactory $resultFactory
-    )
-    {
+    ) {
         parent::__construct($resultFactory);
         $this->logger = $logger;
     }

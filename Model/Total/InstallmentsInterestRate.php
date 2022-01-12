@@ -1,15 +1,15 @@
 <?php
+
 namespace Paypal\BraintreeBrasil\Model\Total;
 
-use Paypal\BraintreeBrasil\Gateway\Config\PaypalWallet\Config;
+use Magento\Quote\Api\Data\ShippingAssignmentInterface;
+use Magento\Quote\Model\Quote;
+use Magento\Quote\Model\Quote\Address\Total;
+use Magento\Quote\Model\Quote\Address\Total\AbstractTotal;
 use Paypal\BraintreeBrasil\Api\CreditCardManagementInterface;
 use Paypal\BraintreeBrasil\Api\PaypalWalletManagementInterface;
 use Paypal\BraintreeBrasil\Model\Ui\CreditCard\ConfigProvider as ConfigProviderCreditCard;
 use Paypal\BraintreeBrasil\Model\Ui\PaypalWallet\ConfigProvider as ConfigProviderPaypalWallet;
-use Magento\Quote\Model\Quote\Address\Total\AbstractTotal;
-use Magento\Quote\Model\Quote;
-use Magento\Quote\Api\Data\ShippingAssignmentInterface;
-use Magento\Quote\Model\Quote\Address\Total;
 
 class InstallmentsInterestRate extends AbstractTotal
 {
@@ -27,12 +27,10 @@ class InstallmentsInterestRate extends AbstractTotal
      * @param CreditCardManagementInterface $creditCardManagement
      * @param PaypalWalletManagementInterface $paypalWalletManagement
      */
-    public function __construct
-    (
+    public function __construct(
         CreditCardManagementInterface $creditCardManagement,
         PaypalWalletManagementInterface $paypalWalletManagement
-    )
-    {
+    ) {
         $this->setCode('installments_interest_rate');
         $this->paypalWalletManagement = $paypalWalletManagement;
         $this->creditCardManagement = $creditCardManagement;
@@ -56,16 +54,15 @@ class InstallmentsInterestRate extends AbstractTotal
             return $this;
         }
 
-        if($quote->getPayment()->getMethod() === ConfigProviderCreditCard::CODE
-            || $quote->getPayment()->getMethod() === ConfigProviderPaypalWallet::CODE){
-
+        if ($quote->getPayment()->getMethod() === ConfigProviderCreditCard::CODE
+            || $quote->getPayment()->getMethod() === ConfigProviderPaypalWallet::CODE) {
             $installments = $quote->getCreditcardInstallments();
 
-            if($quote->getPayment()->getMethod() === ConfigProviderPaypalWallet::CODE){
+            if ($quote->getPayment()->getMethod() === ConfigProviderPaypalWallet::CODE) {
                 $installments = $quote->getPaypalwalletInstallments();
             }
 
-            if($installments > 1){
+            if ($installments > 1) {
                 $grandTotal = $this->calculateGrandTotalWithoutInterestRate($total);
 
                 // Total installments interest rate cost
@@ -79,7 +76,6 @@ class InstallmentsInterestRate extends AbstractTotal
                 $total->setInstallmentsInterestRate(0);
                 $quote->setData('installments_interest_rate', 0);
             }
-
         } else {
             $total->setInstallmentsInterestRate(0);
             $quote->setData('installments_interest_rate', 0);
@@ -138,18 +134,20 @@ class InstallmentsInterestRate extends AbstractTotal
     {
         $amount = 0;
 
-        if($quote->getPayment()->getMethod() === ConfigProviderPaypalWallet::CODE){
+        if ($quote->getPayment()->getMethod() === ConfigProviderPaypalWallet::CODE) {
             $availableInstallments = $this->paypalWalletManagement->getAvailableInstallments($total);
             $installmentsNumber = (int)$quote->getPaypalwalletInstallments();
-        } else if($quote->getPayment()->getMethod() === ConfigProviderCreditCard::CODE) {
-            $availableInstallments = $this->creditCardManagement->getAvailableInstallments($total);
-            $installmentsNumber = (int)$quote->getCreditcardInstallments();
         } else {
-            return $amount;
+            if ($quote->getPayment()->getMethod() === ConfigProviderCreditCard::CODE) {
+                $availableInstallments = $this->creditCardManagement->getAvailableInstallments($total);
+                $installmentsNumber = (int)$quote->getCreditcardInstallments();
+            } else {
+                return $amount;
+            }
         }
 
-        foreach($availableInstallments as $installment){
-            if($installment->getValue() === $installmentsNumber){
+        foreach ($availableInstallments as $installment) {
+            if ($installment->getValue() === $installmentsNumber) {
                 $amount = $installment->getInterestRate();
                 break;
             }
@@ -166,7 +164,7 @@ class InstallmentsInterestRate extends AbstractTotal
     private function calculateGrandTotalWithoutInterestRate(Total $total)
     {
         $grandTotal = 0;
-        foreach($total->getAllTotalAmounts() as $key => $amount){
+        foreach ($total->getAllTotalAmounts() as $key => $amount) {
             $grandTotal = $grandTotal + (float)$amount;
         }
         return $grandTotal;

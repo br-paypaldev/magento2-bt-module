@@ -1,13 +1,16 @@
 <?php
+
 namespace Paypal\BraintreeBrasil\Gateway\Response\PaypalWallet;
 
-use Paypal\BraintreeBrasil\Logger\Logger;
-use Paypal\BraintreeBrasil\Observer\PaypalWallet\DataAssignObserver;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Response\HandlerInterface;
+use Paypal\BraintreeBrasil\Logger\Logger;
 
 class BraintreeAuthorizationHandler implements HandlerInterface
 {
+    /**
+     * @var Logger
+     */
     protected $logger;
 
     /**
@@ -34,9 +37,15 @@ class BraintreeAuthorizationHandler implements HandlerInterface
         $braintreePaymentResult = $response['braintree_result'] ?? null;
 
         try {
-            if($braintreePaymentResult){
-                $payment->setAdditionalInformation('paypalPayerId', $braintreePaymentResult->transaction->paypal['payerId']);
-                $payment->setAdditionalInformation('paypalPayerEmail', $braintreePaymentResult->transaction->paypal['payerEmail']);
+            if ($braintreePaymentResult) {
+                $payment->setAdditionalInformation(
+                    'paypalPayerId',
+                    $braintreePaymentResult->transaction->paypal['payerId']
+                );
+                $payment->setAdditionalInformation(
+                    'paypalPayerEmail',
+                    $braintreePaymentResult->transaction->paypal['payerEmail']
+                );
 
                 $payment->setTransactionId($braintreePaymentResult->transaction->id);
                 $payment->setCcTransId($braintreePaymentResult->transaction->id);

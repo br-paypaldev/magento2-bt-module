@@ -1,16 +1,19 @@
 <?php
+
 namespace Paypal\BraintreeBrasil\Gateway\Validator\DebitCard;
 
-use Paypal\BraintreeBrasil\Logger\Logger;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Validator\AbstractValidator;
 use Magento\Payment\Gateway\Validator\ResultInterface;
 use Magento\Payment\Gateway\Validator\ResultInterfaceFactory;
+use Paypal\BraintreeBrasil\Logger\Logger;
 
 class AuthorizationValidator extends AbstractValidator
 {
+    /**
+     * @var Logger
+     */
     protected $logger;
-    protected $eventManager;
 
     /**
      * AuthorizationValidator constructor.
@@ -22,7 +25,6 @@ class AuthorizationValidator extends AbstractValidator
         Logger $logger
     ) {
         $this->logger = $logger;
-
         parent::__construct($resultFactory);
     }
 
@@ -53,15 +55,15 @@ class AuthorizationValidator extends AbstractValidator
                 \Braintree\Transaction::SUBMITTED_FOR_SETTLEMENT
             ];
 
-            if(!$result->success && $result->transaction){
+            if (!$result->success && $result->transaction) {
                 if (!in_array($result->transaction->status, $transactionSuccessStatuses)) {
                     $errorMessage = __('Erro ao tentar autorizar o pagamento');
 
-                    if($result->transaction->status === 'processor_declined') {
+                    if ($result->transaction->status === 'processor_declined') {
                         $errorMessage .= ': ' . $result->transaction->processorResponseText;
                     }
                 }
-            } else if(!$result->success && is_null($result->transaction)) {
+            } elseif (!$result->success && is_null($result->transaction)) {
                 $errorMessage = __('Erro ao tentar autorizar o pagamento');
             }
         }

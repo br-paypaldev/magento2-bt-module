@@ -1,12 +1,13 @@
 <?php
+
 namespace Paypal\BraintreeBrasil\Model;
 
-use Paypal\BraintreeBrasil\Api\Data\InstallmentInterfaceFactory;
-use Paypal\BraintreeBrasil\Api\CreditCardManagementInterface;
-use Paypal\BraintreeBrasil\Gateway\Config\CreditCard\Config;
 use Magento\Checkout\Model\Session;
 use Magento\Framework\Pricing\PriceCurrencyInterface;
 use Magento\Quote\Model\QuoteRepository;
+use Paypal\BraintreeBrasil\Api\CreditCardManagementInterface;
+use Paypal\BraintreeBrasil\Api\Data\InstallmentInterfaceFactory;
+use Paypal\BraintreeBrasil\Gateway\Config\CreditCard\Config;
 
 class CreditCardManagement implements CreditCardManagementInterface
 {
@@ -39,15 +40,13 @@ class CreditCardManagement implements CreditCardManagementInterface
      * @param QuoteRepository $quoteRepository
      * @param InstallmentInterfaceFactory $installmentInterfaceFactory
      */
-    public function __construct
-    (
+    public function __construct(
         Session $checkoutSession,
         Config $creditCardConfig,
         PriceCurrencyInterface $priceCurrency,
         QuoteRepository $quoteRepository,
         InstallmentInterfaceFactory $installmentInterfaceFactory
-    )
-    {
+    ) {
         $this->installmentInterfaceFactory = $installmentInterfaceFactory;
         $this->checkoutSession = $checkoutSession;
         $this->priceCurrency = $priceCurrency;
@@ -65,21 +64,24 @@ class CreditCardManagement implements CreditCardManagementInterface
     {
         $result = [];
 
-        if($this->creditCardConfig->getEnableInstallments()){
+        if ($this->creditCardConfig->getEnableInstallments()) {
             $installmentsConfiguration = $this->creditCardConfig->getInstallmentsConfiguration();
 
-            if(!$installmentsConfiguration){
+            if (!$installmentsConfiguration) {
                 return $result;
             }
 
-            usort($installmentsConfiguration, function($a, $b){
-                if((int)$a['installment'] > (int)$b['installment']) return 1;
-                if((int)$a['installment'] < (int)$b['installment']) return -1;
+            usort($installmentsConfiguration, function ($a, $b) {
+                if ((int)$a['installment'] > (int)$b['installment']) {
+                    return 1;
+                }
+                if ((int)$a['installment'] < (int)$b['installment']) {
+                    return -1;
+                }
                 return 0;
             });
 
-            foreach($installmentsConfiguration as $configItem){
-
+            foreach ($installmentsConfiguration as $configItem) {
                 $interestRate = (float)$configItem['interest_rate'];
                 $interestCost = ($interestRate / 100) * $total;
                 $installmentNumber = (int)$configItem['installment'];
@@ -87,22 +89,26 @@ class CreditCardManagement implements CreditCardManagementInterface
                 $installmentPrice = $totalCost / $installmentNumber;
                 $minValue = (float)$configItem['min_value'];
 
-                if($total >= $minValue){
+                if ($total >= $minValue) {
                     $installment = $this->installmentInterfaceFactory->create();
 
-                    if(!$interestRate){
-                        $installment->setLabel(sprintf(
-                            __('%sx of %s without interest'),
-                            $installmentNumber,
-                            $this->priceCurrency->format($installmentPrice, false)
-                        ));
+                    if (!$interestRate) {
+                        $installment->setLabel(
+                            sprintf(
+                                __('%sx of %s without interest'),
+                                $installmentNumber,
+                                $this->priceCurrency->format($installmentPrice, false)
+                            )
+                        );
                     } else {
-                        $installment->setLabel(sprintf(
-                            __('%sx of %s with interest (total cost %s)'),
-                            $installmentNumber,
-                            $this->priceCurrency->format($installmentPrice, false),
-                            $this->priceCurrency->format($totalCost, false)
-                        ));
+                        $installment->setLabel(
+                            sprintf(
+                                __('%sx of %s with interest (total cost %s)'),
+                                $installmentNumber,
+                                $this->priceCurrency->format($installmentPrice, false),
+                                $this->priceCurrency->format($totalCost, false)
+                            )
+                        );
                     }
 
                     $installment->setValue($installmentNumber);

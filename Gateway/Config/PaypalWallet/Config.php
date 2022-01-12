@@ -13,6 +13,8 @@ class Config extends GatewayConfig
 {
     const KEY_ACTIVE = 'active';
     const KEY_TITLE = 'title';
+    const KEY_SANDBOX_MERCHANT_ACCOUNT_ID = 'sandbox_merchant_account_id';
+    const KEY_PRODUCTION_MERCHANT_ACCOUNT_ID = 'production_merchant_account_id';
     const KEY_SORT_ORDER = 'sort_order';
     const KEY_PAYMENT_ACTION = 'payment_action';
     const KEY_ENABLE_INSTALLMENTS = 'enable_installments';
@@ -71,6 +73,18 @@ class Config extends GatewayConfig
     {
         $storeId = $this->storeResolver->getCurrentStoreId();
         return $this->getValue(self::KEY_TITLE, $storeId);
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getMerchantAccountId()
+    {
+        $storeId = $this->storeResolver->getCurrentStoreId();
+        if ($this->globalModuleConfig->getIntegrationMode() === GlobalModuleConfig::SANDBOX_INTEGRATION_MODE) {
+            return $this->getValue(self::KEY_SANDBOX_MERCHANT_ACCOUNT_ID, $storeId);
+        }
+        return $this->getValue(self::KEY_PRODUCTION_MERCHANT_ACCOUNT_ID, $storeId);
     }
 
     /**

@@ -1,74 +1,59 @@
 <?php
+
 namespace Paypal\BraintreeBrasil\Gateway\Http\Client\PaypalWallet;
 
 use Braintree\Exception\Authorization;
-use Paypal\BraintreeBrasil\Gateway\Config\Config as GatewayModuleConfig;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Payment\Gateway\Http\ClientException;
+use Magento\Payment\Gateway\Http\ClientInterface;
+use Magento\Payment\Gateway\Http\TransferInterface;
 use Paypal\BraintreeBrasil\Gateway\Config\PaypalWallet\Config;
 use Paypal\BraintreeBrasil\Gateway\Http\Client;
 use Paypal\BraintreeBrasil\Gateway\Http\Client\PaypalWallet\Authorization\ChargePayPalWalletInstallments;
 use Paypal\BraintreeBrasil\Logger\Logger;
-use Paypal\BraintreeBrasil\Model\Config\Source\PaymentAction;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Model\Context;
-use Magento\Payment\Gateway\Http\ClientException;
-use Magento\Payment\Gateway\Http\ClientInterface;
-use Magento\Payment\Gateway\Http\TransferInterface;
-use Magento\Store\Model\StoreManagerInterface;
 
 /**
- * Class TransactionSale
+ * Class TransactionAuthorization
  */
 class TransactionAuthorization implements ClientInterface
 {
 
-    protected $helper;
+    /**
+     * @var Logger
+     */
     protected $logger;
-    protected $_appState;
-    protected $_storeManager;
+
     /**
      * @var Client
      */
     private $braintreeClient;
+
     /**
      * @var Config
      */
     private $paypalWalletConfig;
-    /**
-     * @var GatewayModuleConfig
-     */
-    private $gatewayModuleConfig;
+
     /**
      * @var Authorization\ChargePayPalWalletInstallments
      */
     private $chargePayPalWalletInstallments;
 
     /**
-     * PaymentRequest constructor.
-     *
-     * @param Context $context
      * @param Logger $logger
-     * @param StoreManagerInterface $storeManager
-     * @param GatewayModuleConfig $gatewayModuleConfig
      * @param Config $paypalWalletConfig
      * @param Client $braintreeClient
+     * @param ChargePayPalWalletInstallments $chargePayPalWalletInstallments
      * @param array $data
      */
     public function __construct(
-        Context $context,
         Logger $logger,
-        StoreManagerInterface $storeManager,
-        GatewayModuleConfig $gatewayModuleConfig,
         Config $paypalWalletConfig,
         Client $braintreeClient,
-        ChargePayPalWalletInstallments $chargePayPalWalletInstallments,
-        array $data = []
+        ChargePayPalWalletInstallments $chargePayPalWalletInstallments
     ) {
         $this->logger = $logger;
-        $this->_appState = $context->getAppState();
-        $this->_storeManager = $storeManager;
         $this->braintreeClient = $braintreeClient;
         $this->paypalWalletConfig = $paypalWalletConfig;
-        $this->gatewayModuleConfig = $gatewayModuleConfig;
         $this->chargePayPalWalletInstallments = $chargePayPalWalletInstallments;
     }
 
@@ -86,12 +71,10 @@ class TransactionAuthorization implements ClientInterface
         $response = [];
 
         try {
-
             // Have installments?
             if ($this->paypalWalletConfig->getEnableInstallments()
                 && isset($request['with_installments']['installments'])
                 && (int)$request['with_installments']['installments'] > 1) {
-
                 // Charge on PayPal GraphQl API
 
                 if ($request['with_installments']['installments'] > $this->paypalWalletConfig->getMaxInstallments()) {
@@ -105,7 +88,11 @@ class TransactionAuthorization implements ClientInterface
                     $paymentMethodId,
                     $request['amount'],
                     (int)$request['with_installments']['installments'],
-                    $financingOptionMonthlyPayment
+                    $financingOptionMonthlyPayment,
+                    $request['lineItems'],
+                    $request['shipping'],
+                    $request['shippingAmount'],
+                    $request['merchantAccountId']
                 );
                 $response['paypal_charge_result'] = $result;
 
@@ -128,8 +115,7 @@ class TransactionAuthorization implements ClientInterface
 
                 $this->logger->info('Transaction RESULT', [$response['braintree_result']]);
             }
-
-        } catch (Authorization $e){
+        } catch (Authorization $e) {
             $this->logger->info('Braintree Authorization Exception', [$e->getMessage()]);
             $response['error'] = $e->getMessage();
         } catch (\Exception $e) {

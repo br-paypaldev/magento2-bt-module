@@ -1,30 +1,26 @@
 <?php
+
 namespace Paypal\BraintreeBrasil\Gateway\Response\PaypalWallet;
 
-use Paypal\BraintreeBrasil\Gateway\Config\PaypalWallet\Config;
-use Paypal\BraintreeBrasil\Logger\Logger;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Response\HandlerInterface;
+use Paypal\BraintreeBrasil\Logger\Logger;
 
 class CancelHandler implements HandlerInterface
 {
-    protected $logger;
     /**
-     * @var Config
+     * @var Logger
      */
-    private $paypalWalletConfig;
+    protected $logger;
 
     /**
      * AuthorizationHandler constructor.
-     * @param Config $paypalWalletConfig
      * @param Logger $logger
      */
     public function __construct(
-        Config $paypalWalletConfig,
         Logger $logger
     ) {
         $this->logger = $logger;
-        $this->paypalWalletConfig = $paypalWalletConfig;
     }
 
     /**
@@ -41,7 +37,7 @@ class CancelHandler implements HandlerInterface
         $cancelResult = $response['cancel_result'];
 
         try {
-            if($cancelResult->success){
+            if ($cancelResult->success) {
                 $payment->setIsTransactionPending(false);
                 $payment->setIsTransactionClosed(true);
                 $payment->setShouldCloseParentTransaction(true);

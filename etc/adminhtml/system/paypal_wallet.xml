@@ -14,7 +14,28 @@
             <config_path>payment/paypal_braintree_brasil_paypal_wallet/title</config_path>
         </field>
 
-        <field id="enable_installments" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+        <field id="sandbox_merchant_account_id" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Use a different Merchant Account ID (sandbox)</label>
+            <source_model>Paypal\BraintreeBrasil\Model\Config\Source\MerchantAccountId</source_model>
+            <config_path>payment/paypal_braintree_brasil_paypal_wallet/sandbox_merchant_account_id</config_path>
+            <comment>If options are not showing, review 'Merchant Account Id Configuration' section and add options there</comment>
+        </field>
+
+        <field id="production_merchant_account_id" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Use a different Merchant Account ID (production)</label>
+            <source_model>Paypal\BraintreeBrasil\Model\Config\Source\MerchantAccountId</source_model>
+            <config_path>payment/paypal_braintree_brasil_paypal_wallet/production_merchant_account_id</config_path>
+            <comment>If options are not showing, review 'Merchant Account Id Configuration' section and add options there</comment>
+        </field>
+
+        <field id="enable_stc" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Enable STC</label>
+            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+            <config_path>payment/paypal_braintree_brasil_paypal_wallet/enable_stc</config_path>
+            <comment>Enable STC for wallet payment</comment>
+        </field>
+
+        <field id="enable_installments" translate="label" type="select" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
             <label>Enable installments</label>
             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
             <config_path>payment/paypal_braintree_brasil_paypal_wallet/enable_installments</config_path>
@@ -22,13 +43,13 @@
             <frontend_model>Paypal\BraintreeBrasil\Block\Adminhtml\System\Config\ChangeAuthorizeCaptureValue</frontend_model>
         </field>
 
-        <field id="payment_action" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+        <field id="payment_action" translate="label" type="select" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
             <label>Capture method</label>
             <source_model>Paypal\BraintreeBrasil\Model\Config\Source\PaymentAction</source_model>
             <config_path>payment/paypal_braintree_brasil_paypal_wallet/payment_action</config_path>
         </field>
 
-        <field id="max_installments" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+        <field id="max_installments" translate="label" type="text" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
             <label>Maximum number for installments</label>
             <frontend_class>validate-number</frontend_class>
             <config_path>payment/paypal_braintree_brasil_paypal_wallet/max_installments</config_path>

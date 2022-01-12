@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Paypal\BraintreeBrasil\Service;
@@ -13,11 +14,9 @@ class GetInstallments
     /**
      * @param PaypalGraphQL $paypalGraphQLClient
      */
-    public function __construct
-    (
+    public function __construct(
         PaypalGraphQL $paypalGraphQLClient
-    )
-    {
+    ) {
         $this->paypalGraphQLClient = $paypalGraphQLClient;
     }
 

@@ -1,4 +1,5 @@
 <?php
+
 namespace Paypal\BraintreeBrasil\Block\Info;
 
 use Magento\Framework\View\Element\Template\Context;
@@ -24,12 +25,11 @@ class DebitCard extends Info
      * @param Repository $transactionRepository
      * @param array $data
      */
-    public function __construct
-    (
+    public function __construct(
         Context $context,
         Repository $transactionRepository,
-        array $data = [])
-    {
+        array $data = []
+    ) {
         parent::__construct($context, $data);
         $this->transactionRepository = $transactionRepository;
     }

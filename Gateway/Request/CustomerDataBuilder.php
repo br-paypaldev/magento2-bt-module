@@ -10,12 +10,15 @@ use Magento\Payment\Gateway\Data\PaymentDataObject;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Request\BuilderInterface;
 use Magento\Sales\Model\Order;
+use Paypal\BraintreeBrasil\Traits\FormatFields;
 
 /**
  * Class CustomerDataBuilder
  */
 class CustomerDataBuilder implements BuilderInterface
 {
+    use FormatFields;
+
     private $logger;
     /**
      * @var FieldsMapper
@@ -90,10 +93,31 @@ class CustomerDataBuilder implements BuilderInterface
                         $this->fieldsMapper->getAddressNeighbordhood($quote)
                     ]),
                     'locality' => $billingAddress->getCity(),
-                    'postalCode' => str_replace('/\D+/', '', $billingAddress->getPostcode()),
+                    'postalCode' => $this->onlyNumbers($billingAddress->getPostcode()),
                     'region' => $billingAddress->getRegionName()
                 ]
             ];
+
+            if (!$order->getIsVirtual()) {
+                $shippingAddress = $order->getShippingAddress();
+                $request['shipping'] = [
+                    'countryCodeAlpha2' => 'BR',
+                    'countryCodeAlpha3' => 'BRA',
+                    'countryCodeNumeric' => 76,
+                    'countryName' => 'Brazil',
+                    'firstName' => $shippingAddress->getFirstname(),
+                    'lastName' => $shippingAddress->getLastname(),
+                    'streetAddress' => $this->fieldsMapper->getAddressStreet($quote, 'shipping'),
+                    'extendedAddress' => implode(', ', [
+                        $this->fieldsMapper->getAddressStreetNumber($quote, 'shipping'),
+                        $this->fieldsMapper->getAddressComplementary($quote, 'shipping'),
+                        $this->fieldsMapper->getAddressNeighbordhood($quote, 'shipping')
+                    ]),
+                    'locality' => $shippingAddress->getCity(),
+                    'postalCode' => $this->onlyNumbers($shippingAddress->getPostcode()),
+                    'region' => $shippingAddress->getRegionName()
+                ];
+            }
         } catch (\Exception $e) {
             throw new LocalizedException(__($e->getMessage()));
         }

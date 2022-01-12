@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Paypal\BraintreeBrasil\Model\Config\Source;
@@ -18,8 +19,14 @@ class PaymentAction implements OptionSourceInterface
     public function toOptionArray()
     {
         return [
-            ['value' => self::PAYMENT_ACTION_AUTHORIZE, 'label' => __('Authorize (capture later)')],
-            ['value' => self::PAYMENT_ACTION_AUTHORIZE_CAPTURE, 'label' => __('Authorization and Capture (capture automatically)')]
+            [
+                'value' => self::PAYMENT_ACTION_AUTHORIZE,
+                'label' => __('Authorize (capture later)')
+            ],
+            [
+                'value' => self::PAYMENT_ACTION_AUTHORIZE_CAPTURE,
+                'label' => __('Authorization and Capture (capture automatically)')
+            ]
         ];
     }
 }

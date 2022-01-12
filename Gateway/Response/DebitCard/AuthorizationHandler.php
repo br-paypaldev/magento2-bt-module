@@ -1,14 +1,18 @@
 <?php
+
 namespace Paypal\BraintreeBrasil\Gateway\Response\DebitCard;
 
-use Paypal\BraintreeBrasil\Logger\Logger;
-use Paypal\BraintreeBrasil\Model\PaymentTokenRepository;
 use Magento\Framework\Event\Manager;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Response\HandlerInterface;
+use Paypal\BraintreeBrasil\Logger\Logger;
+use Paypal\BraintreeBrasil\Model\PaymentTokenRepository;
 
 class AuthorizationHandler implements HandlerInterface
 {
+    /**
+     * @var Logger
+     */
     protected $logger;
     /**
      * @var PaymentTokenRepository
@@ -50,13 +54,13 @@ class AuthorizationHandler implements HandlerInterface
 
         try {
             // add payment token data to additional information
-            if($response['payment_token_id']){
+            if ($response['payment_token_id']) {
                 $paymentToken = $this->paymentTokenRepository->get($response['payment_token_id']);
                 $payment->setAdditionalInformation('dc_type', $paymentToken->getCardBrand());
                 $payment->setAdditionalInformation('dc_last', $paymentToken->getCardLastFour());
             }
 
-            if($response['save_dc']){
+            if ($response['save_dc']) {
                 $this->eventManager->dispatch('braintree_brasil_debitcard_save_payment_token', [
                     'braintree_transaction' => $paymentResult->transaction
                 ]);

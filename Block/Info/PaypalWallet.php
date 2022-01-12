@@ -1,4 +1,5 @@
 <?php
+
 namespace Paypal\BraintreeBrasil\Block\Info;
 
 use Magento\Framework\Pricing\Helper\Data;
@@ -30,13 +31,12 @@ class PaypalWallet extends Info
      * @param Repository $transactionRepository
      * @param array $data
      */
-    public function __construct
-    (
+    public function __construct(
         Context $context,
         Data $pricingHelper,
         Repository $transactionRepository,
-        array $data = [])
-    {
+        array $data = []
+    ) {
         parent::__construct($context, $data);
         $this->transactionRepository = $transactionRepository;
         $this->pricingHelper = $pricingHelper;
@@ -52,7 +52,7 @@ class PaypalWallet extends Info
             $this->getInfo()->getId()
         );
 
-        if(!$transactionAuthorization){
+        if (!$transactionAuthorization) {
             $transactionAuthorization = $this->transactionRepository->getByTransactionType(
                 TransactionInterface::TYPE_CAPTURE,
                 $this->getInfo()->getId()

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Paypal\BraintreeBrasil\Model;
@@ -78,8 +79,7 @@ class PaypalWalletManagement implements PaypalWalletManagementInterface
      * @param GetCurrentAvailableInstallments $getCurrentAvailableInstallments
      * @param Client $braintreeClient
      */
-    public function __construct
-    (
+    public function __construct(
         Config $braintreeConfig,
         Session $checkoutSession,
         FieldsMapper $fieldsMapper,
@@ -91,8 +91,7 @@ class PaypalWalletManagement implements PaypalWalletManagementInterface
         QuoteRepository $quoteRepository,
         GetCurrentAvailableInstallments $getCurrentAvailableInstallments,
         Client $braintreeClient
-    )
-    {
+    ) {
         $this->checkoutSession = $checkoutSession;
         $this->fieldsMapper = $fieldsMapper;
         $this->braintreeClient = $braintreeClient;
@@ -134,10 +133,10 @@ class PaypalWalletManagement implements PaypalWalletManagementInterface
         );
 
         // create payment method from agreement
-        $paymentMethodResult = $this->braintreeClient->getBraintreeClient()->paymentMethod()->create([
-            'customerId' => $braintree_customer_id,
-            'paymentMethodNonce' => $payment_method_nonce
-        ]);
+        $paymentMethodResult = $this->braintreeClient
+            ->getBraintreeClient()
+            ->paymentMethod()
+            ->create(['customerId' => $braintree_customer_id, 'paymentMethodNonce' => $payment_method_nonce]);
 
         // save for later use, on authorization transaction and installments query
         $this->checkoutSession->setPaypalWalletPaymentMethod($paymentMethodResult->paymentMethod);
@@ -162,7 +161,7 @@ class PaypalWalletManagement implements PaypalWalletManagementInterface
         $total = $quote->getGrandTotal() - $quote->getInstallmentsInterestRate();
         $paymentMethod = $this->checkoutSession->getPaypalWalletPaymentMethod();
 
-        if(!$paymentMethod){
+        if (!$paymentMethod) {
             return false;
         }
 
@@ -170,15 +169,15 @@ class PaypalWalletManagement implements PaypalWalletManagementInterface
         $isSandbox = $this->braintreeConfig->getIntegrationMode() === Config::SANDBOX_INTEGRATION_MODE;
         $content = $this->getInstallments->execute($paymentMethodId, $total, $isSandbox);
 
-        if(!isset($content->data->paypalFinancingOptions->financingOptions)){
+        if (!isset($content->data->paypalFinancingOptions->financingOptions)) {
             $this->checkoutSession->setPaypalWalletFinancingOption(null);
             throw new LocalizedException(__('Invalid installments query result'));
         }
 
         // send to checkout session
         $installmentOptions = $content->data->paypalFinancingOptions->financingOptions[0]->qualifyingFinancingOptions;
-        foreach($installmentOptions as $option) {
-            if($option->term == $installments){
+        foreach ($installmentOptions as $option) {
+            if ($option->term == $installments) {
                 $this->checkoutSession->setPaypalWalletFinancingOption($option);
                 break;
             }
@@ -193,20 +192,20 @@ class PaypalWalletManagement implements PaypalWalletManagementInterface
      */
     public function getAvailableInstallments($total)
     {
-        if($this->getCurrentAvailableInstallments->getAvailableInstallments()){
+        if ($this->getCurrentAvailableInstallments->getAvailableInstallments()) {
             return $this->getCurrentAvailableInstallments->getAvailableInstallments();
         }
 
         $enableInstallments = $this->paypalWalletConfig->getEnableInstallments();
         $maxInstallments = $this->paypalWalletConfig->getMaxInstallments();
 
-        if(!$enableInstallments){
+        if (!$enableInstallments) {
             return [];
         }
 
         $paymentMethod = $this->checkoutSession->getPaypalWalletPaymentMethod();
 
-        if(!$paymentMethod){
+        if (!$paymentMethod) {
             return [];
         }
 
@@ -217,13 +216,13 @@ class PaypalWalletManagement implements PaypalWalletManagementInterface
 
         $result = [];
 
-        if(!isset($content->data->paypalFinancingOptions->financingOptions)){
+        if (!isset($content->data->paypalFinancingOptions->financingOptions)) {
             return $result;
         }
 
         $installmentOptions = $content->data->paypalFinancingOptions->financingOptions[0]->qualifyingFinancingOptions;
-        foreach($installmentOptions as $option){
-            if($option->term > $maxInstallments){
+        foreach ($installmentOptions as $option) {
+            if ($option->term > $maxInstallments) {
                 break;
             }
 
@@ -233,8 +232,13 @@ class PaypalWalletManagement implements PaypalWalletManagementInterface
             $totalCost = $this->priceCurrency->format($option->totalCost->value, false);
             $label = sprintf((string)__("%sx of %s without interest"), $option->term, $installmentPrice);
 
-            if($option->monthlyInterestRate){
-                $label = sprintf((string)__("%sx of %s with interest (total cost %s)"), $option->term, $installmentPrice, $totalCost);
+            if ($option->monthlyInterestRate) {
+                $label = sprintf(
+                    (string)__("%sx of %s with interest (total cost %s)"),
+                    $option->term,
+                    $installmentPrice,
+                    $totalCost
+                );
             }
 
             $installment->setLabel($label);

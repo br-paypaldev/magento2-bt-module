@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Paypal\BraintreeBrasil\Model\Config\Source;
@@ -16,11 +17,9 @@ class CustomerAttributes implements OptionSourceInterface
     /**
      * CustomerAttributes constructor.
      */
-    public function __construct
-    (
+    public function __construct(
         CollectionFactory $attributeCollectionFactory
-    )
-    {
+    ) {
         $this->attributeCollectionFactory = $attributeCollectionFactory;
     }
 
@@ -48,8 +47,11 @@ class CustomerAttributes implements OptionSourceInterface
         }
 
         $maxStreetLines = 4;
-        foreach(range(1, $maxStreetLines) as $line){
-            $options[] = ['label' => __('Street Line %1 (Billing Address)', $line), 'value' => 'address_street_' . (int)$line];
+        foreach (range(1, $maxStreetLines) as $line) {
+            $options[] = [
+                'label' => __('Street Line %1 (Billing Address)', $line),
+                'value' => 'address_street_' . (int)$line
+            ];
         }
 
         $model = $this->attributeCollectionFactory->create();

@@ -1,4 +1,5 @@
 <?php
+
 namespace Paypal\BraintreeBrasil\Block\Customer;
 
 use Paypal\BraintreeBrasil\Model\PaymentTokenManagement;
@@ -33,15 +34,13 @@ class PaymentTokens extends Template
      * @param Context $context
      * @param array $data
      */
-    public function __construct
-    (
+    public function __construct(
         PaymentTokenManagement $paymentTokenManagement,
         PaymentTokenCollectionFactory $paymentTokenCollectionFactory,
         Session $customerSession,
         Context $context,
         array $data = []
-    )
-    {
+    ) {
         parent::__construct($context, $data);
         $this->paymentTokenManagement = $paymentTokenManagement;
         $this->customerSession = $customerSession;
@@ -64,11 +63,11 @@ class PaymentTokens extends Template
      */
     public function getTypeLabel($type)
     {
-        if($type == 'debitcard'){
+        if ($type == 'debitcard') {
             return __('Debit card');
         }
 
-        if($type == 'creditcard'){
+        if ($type == 'creditcard') {
             return __('Credit card');
         }
 
@@ -102,7 +101,7 @@ class PaymentTokens extends Template
      */
     public function getPaymentTokenCollection()
     {
-        if(!$this->_paymentTokenCollection){
+        if (!$this->_paymentTokenCollection) {
             $page = $this->getRequest()->getParam('p', 1);
 
             $collection = $this->paymentTokenCollectionFactory->create();

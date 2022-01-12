@@ -1,4 +1,5 @@
 <?php
+
 namespace Paypal\BraintreeBrasil\Controller\Customer;
 
 use _HumbugBoxe8a38a0636f4\Nette\Neon\Exception;
@@ -65,7 +66,7 @@ class RemovePaymentToken implements HttpGetActionInterface
      */
     public function execute()
     {
-        if(!$this->customerSession->isLoggedIn()){
+        if (!$this->customerSession->isLoggedIn()) {
             $redirect = $this->redirectFactory->create();
             $redirect->setPath('customer/account/login');
             return $redirect;
@@ -75,15 +76,14 @@ class RemovePaymentToken implements HttpGetActionInterface
             $id = $this->request->getParam('id');
             $paymentToken = $this->paymentTokenRepository->get($id);
 
-            if($paymentToken->getCustomerId() != $this->customerSession->getCustomerId()){
+            if ($paymentToken->getCustomerId() != $this->customerSession->getCustomerId()) {
                 throw new LocalizedException(__('Not authorized'));
             }
 
             $this->paymentTokenRepository->delete($paymentToken);
 
             $this->messageManager->addSuccess(__('The card has been removed'));
-
-        } catch(\Exception $e){
+        } catch (\Exception $e) {
             $this->messageManager->addError($e->getMessage());
         }
 

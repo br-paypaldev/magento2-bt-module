@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Paypal\BraintreeBrasil\Observer\Totals;
@@ -18,11 +19,9 @@ class CopyFromQuoteToOrder implements ObserverInterface
      * CopyFromQuoteToOrder constructor.
      * @param Copy $copyService
      */
-    public function __construct
-    (
+    public function __construct(
         Copy $copyService
-    )
-    {
+    ) {
         $this->copyService = $copyService;
     }
 
@@ -34,7 +33,7 @@ class CopyFromQuoteToOrder implements ObserverInterface
         /* @var \Magento\Quote\Model\Quote $quote */
         $quote = $observer->getEvent()->getData('quote');
 
-        if($order && $quote) {
+        if ($order && $quote) {
             $this->copyService->copyFieldsetToTarget('sales_convert_quote', 'to_order', $quote, $order);
         }
     }

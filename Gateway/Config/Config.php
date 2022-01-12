@@ -1,4 +1,5 @@
 <?php
+
 namespace Paypal\BraintreeBrasil\Gateway\Config;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
@@ -40,15 +41,13 @@ class Config extends GatewayConfig
      * @param string $methodCode
      * @param string $pathPattern
      */
-    public function __construct
-    (
+    public function __construct(
         ScopeConfigInterface $scopeConfig,
         StoreResolver $storeResolver,
         Alnum $alnumValidator,
         $methodCode = 'paypal_braintree_brasil/integration',
         $pathPattern = '%s/%s'
-    )
-    {
+    ) {
         parent::__construct($scopeConfig, $methodCode, $pathPattern);
         $this->storeResolver = $storeResolver;
         $this->alnumValidator = $alnumValidator;
@@ -71,7 +70,7 @@ class Config extends GatewayConfig
         $storeId = $this->storeResolver->getCurrentStoreId();
         $field = self::KEY_PRODUCTION_MERCHANT_ID;
 
-        if($this->getIntegrationMode() == self::SANDBOX_INTEGRATION_MODE){
+        if ($this->getIntegrationMode() == self::SANDBOX_INTEGRATION_MODE) {
             $field = self::KEY_SANDBOX_MERCHANT_ID;
         }
 
@@ -86,7 +85,7 @@ class Config extends GatewayConfig
         $storeId = $this->storeResolver->getCurrentStoreId();
         $field = self::KEY_PRODUCTION_PUBLIC_KEY;
 
-        if($this->getIntegrationMode() == self::SANDBOX_INTEGRATION_MODE){
+        if ($this->getIntegrationMode() == self::SANDBOX_INTEGRATION_MODE) {
             $field = self::KEY_SANDBOX_PUBLIC_KEY;
         }
 
@@ -101,7 +100,7 @@ class Config extends GatewayConfig
         $storeId = $this->storeResolver->getCurrentStoreId();
         $field = self::KEY_PRODUCTION_PRIVATE_KEY;
 
-        if($this->getIntegrationMode() == self::SANDBOX_INTEGRATION_MODE){
+        if ($this->getIntegrationMode() == self::SANDBOX_INTEGRATION_MODE) {
             $field = self::KEY_SANDBOX_PRIVATE_KEY;
         }
 
@@ -116,7 +115,7 @@ class Config extends GatewayConfig
         $storeId = $this->storeResolver->getCurrentStoreId();
         $field = self::KEY_PRODUCTION_MERCHANT_ACCOUNT_ID;
 
-        if($this->getIntegrationMode() == self::SANDBOX_INTEGRATION_MODE){
+        if ($this->getIntegrationMode() == self::SANDBOX_INTEGRATION_MODE) {
             $field = self::KEY_SANDBOX_MERCHANT_ACCOUNT_ID;
         }
 
@@ -141,18 +140,18 @@ class Config extends GatewayConfig
     {
         $isValid = true;
 
-        if(!$this->getMerchantId()
-            && !$this->alnumValidator->isValid($this->getMerchantId())){
+        if (!$this->getMerchantId()
+            && !$this->alnumValidator->isValid($this->getMerchantId())) {
             $isValid = false;
         }
 
-        if(!$this->getPrivateKey()
-            && !$this->alnumValidator->isValid($this->getPrivateKey())){
+        if (!$this->getPrivateKey()
+            && !$this->alnumValidator->isValid($this->getPrivateKey())) {
             $isValid = false;
         }
 
-        if(!$this->getPublicKey()
-            && !$this->alnumValidator->isValid($this->getPublicKey())){
+        if (!$this->getPublicKey()
+            && !$this->alnumValidator->isValid($this->getPublicKey())) {
             $isValid = false;
         }
 

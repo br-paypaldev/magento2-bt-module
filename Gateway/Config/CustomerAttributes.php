@@ -1,4 +1,5 @@
 <?php
+
 namespace Paypal\BraintreeBrasil\Gateway\Config;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
@@ -32,14 +33,12 @@ class CustomerAttributes extends GatewayConfig
      * @param string $methodCode
      * @param string $pathPattern
      */
-    public function __construct
-    (
+    public function __construct(
         ScopeConfigInterface $scopeConfig,
         StoreResolver $storeResolver,
         $methodCode = 'paypal_braintree_brasil/attributes_mapping',
         $pathPattern = '%s/%s'
-    )
-    {
+    ) {
         parent::__construct($scopeConfig, $methodCode, $pathPattern);
         $this->storeResolver = $storeResolver;
     }

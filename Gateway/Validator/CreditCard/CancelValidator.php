@@ -1,4 +1,5 @@
 <?php
+
 namespace Paypal\BraintreeBrasil\Gateway\Validator\CreditCard;
 
 use Paypal\BraintreeBrasil\Logger\Logger;
@@ -9,11 +10,13 @@ use Magento\Payment\Gateway\Validator\ResultInterfaceFactory;
 
 class CancelValidator extends AbstractValidator
 {
+    /**
+     * @var Logger
+     */
     protected $logger;
-    protected $eventManager;
 
     /**
-     * AuthorizationValidator constructor.
+     * CancelValidator constructor.
      *
      * @param ResultInterfaceFactory $resultFactory
      */
@@ -22,7 +25,6 @@ class CancelValidator extends AbstractValidator
         Logger $logger
     ) {
         $this->logger = $logger;
-
         parent::__construct($resultFactory);
     }
 
@@ -43,7 +45,7 @@ class CancelValidator extends AbstractValidator
         } else {
             $cancelResult = $response['cancel_result'];
 
-            if(!$cancelResult->success){
+            if (!$cancelResult->success) {
                 $errorMessage = __('Erro ao tentar cancelar o pagamento');
 
                 $this->logger->info('Cancel transaction error', [$cancelResult->errors]);

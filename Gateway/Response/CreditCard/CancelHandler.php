@@ -1,32 +1,26 @@
 <?php
+
 namespace Paypal\BraintreeBrasil\Gateway\Response\CreditCard;
 
-use Paypal\BraintreeBrasil\Gateway\Config\CreditCard\Config;
-use Paypal\BraintreeBrasil\Logger\Logger;
-use Paypal\BraintreeBrasil\Model\CreditCardManagement;
-use Paypal\BraintreeBrasil\Observer\CreditCard\DataAssignObserver;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Response\HandlerInterface;
+use Paypal\BraintreeBrasil\Logger\Logger;
 
 class CancelHandler implements HandlerInterface
 {
-    protected $logger;
     /**
-     * @var Config
+     * @var Logger
      */
-    private $creditCardConfig;
+    protected $logger;
 
     /**
      * AuthorizationHandler constructor.
-     * @param Config $creditCardConfig
      * @param Logger $logger
      */
     public function __construct(
-        Config $creditCardConfig,
         Logger $logger
     ) {
         $this->logger = $logger;
-        $this->creditCardConfig = $creditCardConfig;
     }
 
     /**
@@ -43,7 +37,7 @@ class CancelHandler implements HandlerInterface
         $cancelResult = $response['cancel_result'];
 
         try {
-            if($cancelResult->success){
+            if ($cancelResult->success) {
                 $payment->setIsTransactionPending(false);
                 $payment->setIsTransactionClosed(true);
                 $payment->setShouldCloseParentTransaction(true);
