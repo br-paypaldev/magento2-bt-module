@@ -128,6 +128,7 @@
                 <item name="payment" xsi:type="string">Paypal\BraintreeBrasil\Gateway\Request\CreditCard\PaymentDataBuilder</item>
                 <item name="channel" xsi:type="string">Paypal\BraintreeBrasil\Gateway\Request\CreditCard\ChannelDataBuilder</item>
                 <item name="items" xsi:type="string">Paypal\BraintreeBrasil\Gateway\Request\ItemsDataBuilder</item>
+                <item name="stc" xsi:type="string">Paypal\BraintreeBrasil\Gateway\Request\StcDataBuilder</item>
             </argument>
         </arguments>
     </virtualType>
@@ -320,6 +321,7 @@
                 <item name="payment" xsi:type="string">Paypal\BraintreeBrasil\Gateway\Request\DebitCard\PaymentDataBuilder</item>
                 <item name="channel" xsi:type="string">Paypal\BraintreeBrasil\Gateway\Request\DebitCard\ChannelDataBuilder</item>
                 <item name="items" xsi:type="string">Paypal\BraintreeBrasil\Gateway\Request\ItemsDataBuilder</item>
+                <item name="stc" xsi:type="string">Paypal\BraintreeBrasil\Gateway\Request\StcDataBuilder</item>
             </argument>
         </arguments>
     </virtualType>
@@ -453,6 +455,7 @@
                 <item name="payment_with_installments" xsi:type="string">Paypal\BraintreeBrasil\Gateway\Request\PaypalWallet\PaymentWithInstallmentsDataBuilder</item>
                 <item name="channel" xsi:type="string">Paypal\BraintreeBrasil\Gateway\Request\PaypalWallet\ChannelDataBuilder</item>
                 <item name="items" xsi:type="string">Paypal\BraintreeBrasil\Gateway\Request\ItemsDataBuilder</item>
+                <item name="stc" xsi:type="string">Paypal\BraintreeBrasil\Gateway\Request\StcDataBuilder</item>
             </argument>
         </arguments>
     </virtualType>

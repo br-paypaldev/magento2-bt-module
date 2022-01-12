@@ -3,6 +3,8 @@
 namespace Paypal\BraintreeBrasil\Gateway\Http\Client\CreditCard;
 
 use Braintree\Exception\Authorization;
+use Paypal\BraintreeBrasil\Gateway\Config\CreditCard\Config;
+use Paypal\BraintreeBrasil\Gateway\Helper\Stc;
 use Paypal\BraintreeBrasil\Gateway\Http\Client;
 use Paypal\BraintreeBrasil\Logger\Logger;
 use Magento\Framework\Exception\LocalizedException;
@@ -22,37 +24,40 @@ class TransactionAuthorization implements ClientInterface
      * @var Logger
      */
     protected $logger;
-    /**
-     * @var \Magento\Framework\App\State
-     */
-    protected $_appState;
-    /**
-     * @var StoreManagerInterface
-     */
-    protected $_storeManager;
+
     /**
      * @var Client
      */
     private $braintreeClient;
 
     /**
-     * @param Context $context
+     * @var Config
+     */
+    private $creditCardConfig;
+
+    /**
+     * @var Stc
+     */
+    private $stcHelper;
+
+    /**
      * @param Logger $logger
-     * @param StoreManagerInterface $storeManager
      * @param Client $braintreeClient
+     * @param Config $creditCardConfig
+     * @param Stc $stcHelper
      * @param array $data
      */
     public function __construct(
-        Context $context,
         Logger $logger,
-        StoreManagerInterface $storeManager,
         Client $braintreeClient,
+        Config $creditCardConfig,
+        Stc $stcHelper,
         array $data = []
     ) {
         $this->logger = $logger;
-        $this->_appState = $context->getAppState();
-        $this->_storeManager = $storeManager;
         $this->braintreeClient = $braintreeClient;
+        $this->creditCardConfig = $creditCardConfig;
+        $this->stcHelper = $stcHelper;
     }
 
     /**
@@ -73,7 +78,7 @@ class TransactionAuthorization implements ClientInterface
                 throw new LocalizedException(__('Customer CPF/CNPJ is empty'));
             }
 
-            $this->braintreeClient->createBraintreeCustomerIfNotExists(
+            $braintreeCustomer = $this->braintreeClient->createBraintreeCustomerIfNotExists(
                 $request['customer']['braintree_customer_id'],
                 $request['customer']['firstname'],
                 $request['customer']['lastname'],
@@ -83,9 +88,19 @@ class TransactionAuthorization implements ClientInterface
                 $request['customer']['company']
             );
 
+            foreach ($request['stc']['additional_data'] as &$data) {
+                if ($data['key'] === 'sender_create_date') {
+                    $data['value'] = $braintreeCustomer->createdAt->format('Y-m-d\TH:i:s');
+                    break;
+                }
+            }
+
             $paymentTokenId = $request['payment_token_id'];
             $braintreeCustomerId = $request['customer']['braintree_customer_id'];
-            unset($request['customer'], $request['payment_token_id']);
+
+            $this->sendStc($request['stc']);
+            unset($request['customer'], $request['payment_token_id'], $request['stc']);
+
             $result = $this->braintreeClient->getBraintreeClient()->transaction()->sale($request);
 
             $this->logger->info('Transaction RESULT', [$result]);
@@ -104,5 +119,16 @@ class TransactionAuthorization implements ClientInterface
         }
 
         return $response;
+    }
+
+    /**
+     * @param array $stcData
+     * @throws \Exception
+     */
+    private function sendStc($stcData)
+    {
+        if ($this->creditCardConfig->getEnableStc()) {
+            $this->stcHelper->send($stcData);
+        }
     }
 }

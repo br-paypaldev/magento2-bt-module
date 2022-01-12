@@ -8,6 +8,7 @@ use Magento\Payment\Gateway\Http\ClientException;
 use Magento\Payment\Gateway\Http\ClientInterface;
 use Magento\Payment\Gateway\Http\TransferInterface;
 use Paypal\BraintreeBrasil\Gateway\Config\PaypalWallet\Config;
+use Paypal\BraintreeBrasil\Gateway\Helper\Stc;
 use Paypal\BraintreeBrasil\Gateway\Http\Client;
 use Paypal\BraintreeBrasil\Gateway\Http\Client\PaypalWallet\Authorization\ChargePayPalWalletInstallments;
 use Paypal\BraintreeBrasil\Logger\Logger;
@@ -39,22 +40,29 @@ class TransactionAuthorization implements ClientInterface
     private $chargePayPalWalletInstallments;
 
     /**
+     * @var Stc
+     */
+    private $stcHelper;
+
+    /**
      * @param Logger $logger
      * @param Config $paypalWalletConfig
      * @param Client $braintreeClient
      * @param ChargePayPalWalletInstallments $chargePayPalWalletInstallments
-     * @param array $data
+     * @param Stc $stcHelper
      */
     public function __construct(
         Logger $logger,
         Config $paypalWalletConfig,
         Client $braintreeClient,
-        ChargePayPalWalletInstallments $chargePayPalWalletInstallments
+        ChargePayPalWalletInstallments $chargePayPalWalletInstallments,
+        Stc $stcHelper
     ) {
         $this->logger = $logger;
         $this->braintreeClient = $braintreeClient;
         $this->paypalWalletConfig = $paypalWalletConfig;
         $this->chargePayPalWalletInstallments = $chargePayPalWalletInstallments;
+        $this->stcHelper = $stcHelper;
     }
 
     /**
@@ -71,6 +79,9 @@ class TransactionAuthorization implements ClientInterface
         $response = [];
 
         try {
+            $this->sendStc($request);
+            unset($request['stc']);
+
             // Have installments?
             if ($this->paypalWalletConfig->getEnableInstallments()
                 && isset($request['with_installments']['installments'])
@@ -124,5 +135,37 @@ class TransactionAuthorization implements ClientInterface
         }
 
         return $response;
+    }
+
+    /**
+     * @param array $request
+     * @throws \Exception
+     */
+    private function sendStc($request)
+    {
+        if ($this->paypalWalletConfig->getEnableStc()) {
+            try {
+                $braintreeCustomer = $this->braintreeClient->createBraintreeCustomerIfNotExists(
+                    $request['customer']['braintree_customer_id'],
+                    $request['customer']['firstname'],
+                    $request['customer']['lastname'],
+                    $request['customer']['email'],
+                    $request['customer']['telephone'],
+                    $request['customer']['fax'],
+                    $request['customer']['company']
+                );
+
+                foreach ($request['stc']['additional_data'] as &$data) {
+                    if ($data['key'] === 'sender_create_date') {
+                        $data['value'] = $braintreeCustomer->createdAt->format('Y-m-d\TH:i:s');
+                        break;
+                    }
+                }
+                $this->stcHelper->send($request['stc']);
+            } catch (\Exception $exception) {
+                $this->logger->error(__("Can't create STC. %1", $exception->getMessage()));
+                throw $exception;
+            }
+        }
     }
 }

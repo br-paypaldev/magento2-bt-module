@@ -29,6 +29,13 @@
             <comment>If options are not showing, review 'Merchant Account Id Configuration' section and add options there</comment>
         </field>
 
+        <field id="enable_stc" translate="label" type="select" sortOrder="36" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Enable STC</label>
+            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+            <config_path>payment/paypal_braintree_brasil_creditcard/enable_stc</config_path>
+            <comment>Enable STC for credit card payment</comment>
+        </field>
+
         <field id="enable_installments" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
             <label>Enable installments</label>
             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>

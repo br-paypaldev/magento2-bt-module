@@ -20,6 +20,7 @@ class Config extends GatewayConfig
     const KEY_ENABLE_INSTALLMENTS = 'enable_installments';
     const KEY_MAX_INSTALLMENTS = 'max_installments';
     const KEY_CHANNEL = 'channel';
+    const KEY_ENABLE_STC = 'enable_stc';
 
     /**
      * @var StoreResolver
@@ -130,6 +131,15 @@ class Config extends GatewayConfig
     {
         $storeId = $this->storeResolver->getCurrentStoreId();
         return $this->getValue(self::KEY_CHANNEL, $storeId);
+    }
+
+    /**
+     * @return bool
+     */
+    public function getEnableStc()
+    {
+        $storeId = $this->storeResolver->getCurrentStoreId();
+        return (bool)$this->getValue(self::KEY_ENABLE_STC, $storeId);
     }
 
     /**

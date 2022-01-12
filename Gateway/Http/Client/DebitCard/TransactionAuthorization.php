@@ -2,68 +2,63 @@
 
 namespace Paypal\BraintreeBrasil\Gateway\Http\Client\DebitCard;
 
-use Braintree\Exception\Authentication;
 use Braintree\Exception\Authorization;
-use Paypal\BraintreeBrasil\Gateway\Config\Config as GatewayModuleConfig;
-use Paypal\BraintreeBrasil\Gateway\Config\DebitCard\Config;
-use Paypal\BraintreeBrasil\Gateway\Http\Client;
-use Paypal\BraintreeBrasil\Logger\Logger;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Model\Context;
 use Magento\Payment\Gateway\Http\ClientException;
 use Magento\Payment\Gateway\Http\ClientInterface;
 use Magento\Payment\Gateway\Http\TransferInterface;
 use Magento\Store\Model\StoreManagerInterface;
+use Paypal\BraintreeBrasil\Gateway\Config\Config as GatewayModuleConfig;
+use Paypal\BraintreeBrasil\Gateway\Config\DebitCard\Config;
+use Paypal\BraintreeBrasil\Gateway\Helper\Stc;
+use Paypal\BraintreeBrasil\Gateway\Http\Client;
+use Paypal\BraintreeBrasil\Logger\Logger;
 
 /**
- * Class TransactionSale
+ * Class TransactionAuthorization
  */
 class TransactionAuthorization implements ClientInterface
 {
 
-    protected $helper;
+    /**
+     * @var Logger
+     */
     protected $logger;
-    protected $_appState;
-    protected $_storeManager;
+
     /**
      * @var Client
      */
     private $braintreeClient;
+
     /**
      * @var Config
      */
     private $debitCardConfig;
-    /**
-     * @var GatewayModuleConfig
-     */
-    private $gatewayModuleConfig;
 
     /**
-     * PaymentRequest constructor.
-     *
-     * @param Context $context
+     * @var Stc
+     */
+    private $stcHelper;
+
+    /**
      * @param Logger $logger
-     * @param StoreManagerInterface $storeManager
-     * @param GatewayModuleConfig $gatewayModuleConfig
      * @param Config $debitCardConfig
      * @param Client $braintreeClient
+     * @param Stc $stcHelper
      * @param array $data
      */
     public function __construct(
-        Context $context,
         Logger $logger,
-        StoreManagerInterface $storeManager,
-        GatewayModuleConfig $gatewayModuleConfig,
         Config $debitCardConfig,
         Client $braintreeClient,
+        Stc $stcHelper,
         array $data = []
     ) {
         $this->logger = $logger;
-        $this->_appState = $context->getAppState();
-        $this->_storeManager = $storeManager;
         $this->braintreeClient = $braintreeClient;
         $this->debitCardConfig = $debitCardConfig;
-        $this->gatewayModuleConfig = $gatewayModuleConfig;
+        $this->stcHelper = $stcHelper;
     }
 
     /**
@@ -84,7 +79,7 @@ class TransactionAuthorization implements ClientInterface
                 throw new LocalizedException(__('Customer CPF/CNPJ is empty'));
             }
 
-            $this->braintreeClient->createBraintreeCustomerIfNotExists(
+            $braintreeCustomer = $this->braintreeClient->createBraintreeCustomerIfNotExists(
                 $request['customer']['braintree_customer_id'],
                 $request['customer']['firstname'],
                 $request['customer']['lastname'],
@@ -94,9 +89,18 @@ class TransactionAuthorization implements ClientInterface
                 $request['customer']['company']
             );
 
+            foreach ($request['stc']['additional_data'] as &$data) {
+                if ($data['key'] === 'sender_create_date') {
+                    $data['value'] = $braintreeCustomer->createdAt->format('Y-m-d\TH:i:s');
+                    break;
+                }
+            }
+
             $paymentTokenId = $request['payment_token_id'];
             $braintreeCustomerId = $request['customer']['braintree_customer_id'];
-            unset($request['customer'], $request['payment_token_id']);
+
+            $this->sendStc($request['stc']);
+            unset($request['customer'], $request['payment_token_id'], $request['stc']);
 
             $result = $this->braintreeClient->getBraintreeClient()->transaction()->sale($request);
 
@@ -115,5 +119,16 @@ class TransactionAuthorization implements ClientInterface
         }
 
         return $response;
+    }
+
+    /**
+     * @param array $stcData
+     * @throws \Exception
+     */
+    private function sendStc($stcData)
+    {
+        if ($this->debitCardConfig->getEnableStc()) {
+            $this->stcHelper->send($stcData);
+        }
     }
 }

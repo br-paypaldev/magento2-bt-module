@@ -77,6 +77,28 @@
             </depends>
         </field>
 
+        <field id="stc_merchant_id" translate="label" type="text" sortOrder="76" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Specify a Merchant ID for STC</label>
+            <config_path>paypal_braintree_brasil/integration/stc_merchant_id</config_path>
+        </field>
+
+        <field id="stc_client_id" translate="label" type="text" sortOrder="77" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Specify a Client ID for STC</label>
+            <config_path>paypal_braintree_brasil/integration/stc_client_id</config_path>
+        </field>
+
+        <field id="stc_private_key" translate="label" type="text" sortOrder="78" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Specify a Private Key for STC</label>
+            <config_path>paypal_braintree_brasil/integration/stc_private_key</config_path>
+        </field>
+
+        <field id="stc_block_transaction" translate="label" type="select" sortOrder="79" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>STC Block Transaction</label>
+            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+            <config_path>paypal_braintree_brasil/integration/stc_block_transaction</config_path>
+            <comment>If set to 'yes', if stc transaction fails, it will block order from being placed</comment>
+        </field>
+
         <field id="debug" translate="label" type="select" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
             <label>Enable debug</label>
             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>

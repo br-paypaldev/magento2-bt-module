@@ -68,7 +68,8 @@ define(
                         'paypalButtonInitialized',
                         'paypalAccountAuthorized',
                         'canPlaceOrder',
-                        'installments'
+                        'installments',
+                        'dataCollectorInstance'
                     ]);
 
                 this.availableInstallments = ko.observableArray();
@@ -110,7 +111,7 @@ define(
                             ? JSON.stringify(this.paypalBillingAgreementData())
                             : null,
                         installments: this.installments(),
-                        device_data: null
+                        device_data: this.dataCollectorInstance().deviceData
                     }
                 };
             },
@@ -162,6 +163,20 @@ define(
                     braintreePaypalCheckout.create({
                         client: clientInstance
                     }).then(function(paypalCheckoutInstance){
+
+                        // device data collect
+                        braintreeBrasilDeviceDataCollector.create({
+                            client: clientInstance,
+                            hostedFields: true
+                        }, function (err, dataCollectorInstance) {
+                            if (err) {
+                                // Handle error in creation of data collector
+                                return;
+                            }
+                            // At this point, you should access the dataCollectorInstance.deviceData value and provide it
+                            // to your server, e.g. by injecting it into your form as a hidden input.
+                            self.dataCollectorInstance(dataCollectorInstance);
+                        });
 
                         return paypal.Button.render({
                             env: self.getGlobalConfig().integration_mode,
