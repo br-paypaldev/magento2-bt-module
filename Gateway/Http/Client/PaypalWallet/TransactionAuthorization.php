@@ -103,7 +103,8 @@ class TransactionAuthorization implements ClientInterface
                     $request['lineItems'],
                     $request['shipping'],
                     $request['shippingAmount'],
-                    $request['merchantAccountId']
+                    $request['merchantAccountId'],
+                    $request['descriptor'] ?? []
                 );
                 $response['paypal_charge_result'] = $result;
 

@@ -70,6 +70,22 @@
         </arguments>
     </virtualType>
 
+    <virtualType name="CreditCardDescriptor" type="Paypal\BraintreeBrasil\Gateway\Request\DescriptorDataBuilder">
+        <arguments>
+            <argument name="configClass" xsi:type="string">\Paypal\BraintreeBrasil\Gateway\Config\CreditCard\Config</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="DebitCardDescriptor" type="Paypal\BraintreeBrasil\Gateway\Request\DescriptorDataBuilder">
+        <arguments>
+            <argument name="configClass" xsi:type="string">\Paypal\BraintreeBrasil\Gateway\Config\DebitCard\Config</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="WalletDescriptor" type="Paypal\BraintreeBrasil\Gateway\Request\DescriptorDataBuilder">
+        <arguments>
+            <argument name="configClass" xsi:type="string">\Paypal\BraintreeBrasil\Gateway\Config\PaypalWallet\Config</argument>
+        </arguments>
+    </virtualType>
+
     <!-- === Cartão de Crédito === -->
 
     <type name="Magento\Checkout\Model\CompositeConfigProvider">
@@ -129,6 +145,7 @@
                 <item name="channel" xsi:type="string">Paypal\BraintreeBrasil\Gateway\Request\CreditCard\ChannelDataBuilder</item>
                 <item name="items" xsi:type="string">Paypal\BraintreeBrasil\Gateway\Request\ItemsDataBuilder</item>
                 <item name="stc" xsi:type="string">Paypal\BraintreeBrasil\Gateway\Request\StcDataBuilder</item>
+                <item name="descriptor" xsi:type="string">CreditCardDescriptor</item>
             </argument>
         </arguments>
     </virtualType>
@@ -322,6 +339,7 @@
                 <item name="channel" xsi:type="string">Paypal\BraintreeBrasil\Gateway\Request\DebitCard\ChannelDataBuilder</item>
                 <item name="items" xsi:type="string">Paypal\BraintreeBrasil\Gateway\Request\ItemsDataBuilder</item>
                 <item name="stc" xsi:type="string">Paypal\BraintreeBrasil\Gateway\Request\StcDataBuilder</item>
+                <item name="descriptor" xsi:type="string">DebitCardDescriptor</item>
             </argument>
         </arguments>
     </virtualType>
@@ -456,6 +474,7 @@
                 <item name="channel" xsi:type="string">Paypal\BraintreeBrasil\Gateway\Request\PaypalWallet\ChannelDataBuilder</item>
                 <item name="items" xsi:type="string">Paypal\BraintreeBrasil\Gateway\Request\ItemsDataBuilder</item>
                 <item name="stc" xsi:type="string">Paypal\BraintreeBrasil\Gateway\Request\StcDataBuilder</item>
+                <item name="descriptor" xsi:type="string">WalletDescriptor</item>
             </argument>
         </arguments>
     </virtualType>

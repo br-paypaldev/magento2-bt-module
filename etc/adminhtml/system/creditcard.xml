@@ -60,6 +60,36 @@
             </depends>
         </field>
 
+        <field id="descriptor_active" translate="label" type="select" sortOrder="55" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Enable dynamic descriptor</label>
+            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+            <config_path>payment/paypal_braintree_brasil_creditcard/descriptor_active</config_path>
+        </field>
+
+        <field id="descriptor_name" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Dynamic descriptor name</label>
+            <config_path>payment/paypal_braintree_brasil_creditcard/descriptor_name</config_path>
+            <depends>
+                <field id="descriptor_active">1</field>
+            </depends>
+        </field>
+
+        <field id="descriptor_phone" translate="label" type="text" sortOrder="65" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Dynamic descriptor phone</label>
+            <config_path>payment/paypal_braintree_brasil_creditcard/descriptor_phone</config_path>
+            <depends>
+                <field id="descriptor_active">1</field>
+            </depends>
+        </field>
+
+        <field id="descriptor_url" translate="label" type="text" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Dynamic descriptor URL</label>
+            <config_path>payment/paypal_braintree_brasil_creditcard/descriptor_url</config_path>
+            <depends>
+                <field id="descriptor_active">1</field>
+            </depends>
+        </field>
+
         <field id="sort_order" translate="label" type="text" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
             <label>Sort Order</label>
             <frontend_class>validate-number</frontend_class>

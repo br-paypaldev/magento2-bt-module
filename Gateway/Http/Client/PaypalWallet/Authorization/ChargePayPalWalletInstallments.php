@@ -41,6 +41,7 @@ class ChargePayPalWalletInstallments
      * @param $shipping
      * @param $shippingAmount
      * @param $merchantAccountId
+     * @param $descriptor
      * @return mixed
      */
     public function execute(
@@ -51,7 +52,8 @@ class ChargePayPalWalletInstallments
         $lineItems,
         $shipping,
         $shippingAmount,
-        $merchantAccountId
+        $merchantAccountId,
+        $descriptor
     ) {
         $query = 'mutation ChargePayPalAccount($input: ChargePayPalAccountInput!) {
               chargePayPalAccount(input: $input) {
@@ -120,6 +122,10 @@ class ChargePayPalWalletInstallments
                 ]
             ]
         ];
+
+        if ($descriptor) {
+            $variables['input']['transaction']['descriptor'] = $descriptor;
+        }
 
         $isSandbox = $this->braintreeConfig->getIntegrationMode() === Config::SANDBOX_INTEGRATION_MODE;
         $response = $this->paypalGraphQLClient->execute($query, $variables, $isSandbox);

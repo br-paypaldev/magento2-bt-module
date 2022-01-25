@@ -21,6 +21,10 @@ class Config extends GatewayConfig
     const KEY_MAX_INSTALLMENTS = 'max_installments';
     const KEY_CHANNEL = 'channel';
     const KEY_ENABLE_STC = 'enable_stc';
+    const KEY_DESCRIPTOR_ACTIVE = 'descriptor_active';
+    const KEY_DESCRIPTOR_NAME = 'descriptor_name';
+    const KEY_DESCRIPTOR_PHONE = 'descriptor_phone';
+    const KEY_DESCRIPTOR_URL = 'descriptor_url';
 
     /**
      * @var StoreResolver
@@ -140,6 +144,42 @@ class Config extends GatewayConfig
     {
         $storeId = $this->storeResolver->getCurrentStoreId();
         return (bool)$this->getValue(self::KEY_ENABLE_STC, $storeId);
+    }
+
+    /**
+     * @return bool
+     */
+    public function getDescriptorActive()
+    {
+        $storeId = $this->storeResolver->getCurrentStoreId();
+        return (bool)$this->getValue(self::KEY_DESCRIPTOR_ACTIVE, $storeId);
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescriptorName()
+    {
+        $storeId = $this->storeResolver->getCurrentStoreId();
+        return $this->getValue(self::KEY_DESCRIPTOR_NAME, $storeId);
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescriptorPhone()
+    {
+        $storeId = $this->storeResolver->getCurrentStoreId();
+        return $this->getValue(self::KEY_DESCRIPTOR_PHONE, $storeId);
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescriptorUrl()
+    {
+        $storeId = $this->storeResolver->getCurrentStoreId();
+        return $this->getValue(self::KEY_DESCRIPTOR_URL, $storeId);
     }
 
     /**
