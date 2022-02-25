@@ -56,7 +56,7 @@ class FieldsMapper
             }
         }
 
-        return preg_replace('/\D+/', '', $value);
+        return is_array($value) ? '' : preg_replace('/\D+/', '', $value);
     }
 
     /**
@@ -85,7 +85,7 @@ class FieldsMapper
             }
         }
 
-        return preg_replace('/\D+/', '', $value);
+        return is_array($value) ? '' : preg_replace('/\D+/', '', $value);
     }
 
     /**
@@ -117,7 +117,7 @@ class FieldsMapper
             }
         }
 
-        return $value;
+        return is_array($value) ? '' : $value;
     }
 
     /**
@@ -146,7 +146,7 @@ class FieldsMapper
             }
         }
 
-        return $value;
+        return is_array($value) ? '' : $value;
     }
 
     /**
@@ -177,7 +177,7 @@ class FieldsMapper
             }
         }
 
-        return $value;
+        return is_array($value) ? '' : $value;
     }
 
     /**
@@ -209,7 +209,7 @@ class FieldsMapper
             }
         }
 
-        return $value;
+        return is_array($value) ? '' : $value;
     }
 
     /**
@@ -232,7 +232,7 @@ class FieldsMapper
             $value = $quote->$addressMethod()->getData($field);
         }
 
-        return $value;
+        return is_array($value) ? '' : $value;
     }
 
     /**
@@ -255,7 +255,7 @@ class FieldsMapper
             $value = $quote->$addressMethod()->getData($field);
         }
 
-        return $value;
+        return is_array($value) ? '' : $value;
     }
 
     /**
@@ -278,7 +278,7 @@ class FieldsMapper
             $value = $quote->$addressMethod()->getData($field);
         }
 
-        return $value;
+        return is_array($value) ? '' : $value;
     }
 
     /**
@@ -301,7 +301,7 @@ class FieldsMapper
             $value = $quote->$addressMethod()->getData($field);
         }
 
-        return $value;
+        return is_array($value) ? '' : $value;
     }
 
     /**
