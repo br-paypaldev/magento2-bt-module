@@ -2,7 +2,14 @@
 <routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
     <route url="/V1/braintreebrasil/creditcard/available-installments" method="POST">
-        <service class="Paypal\BraintreeBrasil\Api\CreditCardManagementInterface" method="getAvailableInstallments"/>
+        <service class="Paypal\BraintreeBrasil\Api\CreditCardManagementInterface" method="getCreditcardInstallments"/>
+        <resources>
+            <resource ref="anonymous" />
+        </resources>
+    </route>
+
+    <route url="/V1/braintreebrasil/twocreditcards/available-installments" method="POST">
+        <service class="Paypal\BraintreeBrasil\Api\CreditCardManagementInterface" method="getTwoCreditcardsInstallments"/>
         <resources>
             <resource ref="anonymous" />
         </resources>

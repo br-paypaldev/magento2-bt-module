@@ -20,6 +20,7 @@
 
     <table name="quote">
         <column xsi:type="tinyint" name="creditcard_installments" nullable="true" comment="Selected installments"/>
+        <column xsi:type="tinyint" name="second_creditcard_installments" nullable="true" comment="Selected second installments"/>
         <column xsi:type="tinyint" name="paypalwallet_installments" nullable="true" comment="Selected installments"/>
         <column xsi:type="decimal" scale="4" precision="10" name="installments_interest_rate" default="0" comment="Installments interest rate"/>
     </table>

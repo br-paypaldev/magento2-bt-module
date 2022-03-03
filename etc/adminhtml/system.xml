@@ -8,6 +8,7 @@
                 <include path="Paypal_BraintreeBrasil::system/integration.xml"/>
                 <include path="Paypal_BraintreeBrasil::system/attributes_mapping.xml"/>
                 <include path="Paypal_BraintreeBrasil::system/creditcard.xml"/>
+                <include path="Paypal_BraintreeBrasil::system/twocreditcards.xml"/>
                 <include path="Paypal_BraintreeBrasil::system/debitcard.xml"/>
                 <include path="Paypal_BraintreeBrasil::system/paypal_wallet.xml"/>
                 <include path="Paypal_BraintreeBrasil::system/merchant_account_id.xml"/>

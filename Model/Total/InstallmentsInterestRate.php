@@ -9,7 +9,9 @@ use Magento\Quote\Model\Quote\Address\Total\AbstractTotal;
 use Paypal\BraintreeBrasil\Api\CreditCardManagementInterface;
 use Paypal\BraintreeBrasil\Api\PaypalWalletManagementInterface;
 use Paypal\BraintreeBrasil\Model\Ui\CreditCard\ConfigProvider as ConfigProviderCreditCard;
+use Paypal\BraintreeBrasil\Model\Ui\TwoCreditCards\ConfigProvider as ConfigProviderTwoCreditCards;
 use Paypal\BraintreeBrasil\Model\Ui\PaypalWallet\ConfigProvider as ConfigProviderPaypalWallet;
+use Paypal\BraintreeBrasil\Observer\TwoCreditCards\DataAssignObserver;
 
 class InstallmentsInterestRate extends AbstractTotal
 {
@@ -55,11 +57,16 @@ class InstallmentsInterestRate extends AbstractTotal
         }
 
         if ($quote->getPayment()->getMethod() === ConfigProviderCreditCard::CODE
-            || $quote->getPayment()->getMethod() === ConfigProviderPaypalWallet::CODE) {
+            || $quote->getPayment()->getMethod() === ConfigProviderPaypalWallet::CODE
+            || $quote->getPayment()->getMethod() === ConfigProviderTwoCreditCards::CODE) {
             $installments = $quote->getCreditcardInstallments();
 
             if ($quote->getPayment()->getMethod() === ConfigProviderPaypalWallet::CODE) {
                 $installments = $quote->getPaypalwalletInstallments();
+            }
+
+            if ($quote->getPayment()->getMethod() === ConfigProviderTwoCreditCards::CODE) {
+                $installments = max($quote->getCreditcardInstallments(), $quote->getSecondCreditcardInstallments());
             }
 
             if ($installments > 1) {
@@ -135,23 +142,39 @@ class InstallmentsInterestRate extends AbstractTotal
         $amount = 0;
 
         if ($quote->getPayment()->getMethod() === ConfigProviderPaypalWallet::CODE) {
-            $availableInstallments = $this->paypalWalletManagement->getAvailableInstallments($total);
-            $installmentsNumber = (int)$quote->getPaypalwalletInstallments();
+            $amount = $this->getInterestRateAmount(
+                $this->paypalWalletManagement->getAvailableInstallments($total),
+                (int)$quote->getPaypalwalletInstallments()
+            );
         } else {
             if ($quote->getPayment()->getMethod() === ConfigProviderCreditCard::CODE) {
-                $availableInstallments = $this->creditCardManagement->getAvailableInstallments($total);
-                $installmentsNumber = (int)$quote->getCreditcardInstallments();
+                $amount = $this->getInterestRateAmount(
+                    $this->creditCardManagement->getCreditcardInstallments($total),
+                    (int)$quote->getCreditcardInstallments()
+                );
+            } elseif ($quote->getPayment()->getMethod() === ConfigProviderTwoCreditCards::CODE) {
+                $card1Total = $quote->getPayment()->getAdditionalInformation(
+                        'card_1'
+                    )[DataAssignObserver::AMOUNT] ?? 0.0;
+                $card2Total = $quote->getPayment()->getAdditionalInformation(
+                        'card_2'
+                    )[DataAssignObserver::AMOUNT] ?? 0.0;
+                $card1AvailableInstallments = $this->creditCardManagement->getTwoCreditcardsInstallments($card1Total);
+                $card2AvailableInstallments = $this->creditCardManagement->getTwoCreditcardsInstallments($card2Total);
+
+                $amount += $this->getInterestRateAmount(
+                    $card1AvailableInstallments,
+                    (int)$quote->getCreditcardInstallments()
+                );
+                $amount += $this->getInterestRateAmount(
+                    $card2AvailableInstallments,
+                    (int)$quote->getSecondCreditcardInstallments()
+                );
             } else {
                 return $amount;
             }
         }
 
-        foreach ($availableInstallments as $installment) {
-            if ($installment->getValue() === $installmentsNumber) {
-                $amount = $installment->getInterestRate();
-                break;
-            }
-        }
 
         return $amount;
     }
@@ -168,5 +191,19 @@ class InstallmentsInterestRate extends AbstractTotal
             $grandTotal = $grandTotal + (float)$amount;
         }
         return $grandTotal;
+    }
+
+    private function getInterestRateAmount($availableInstallments, $installmentNumber)
+    {
+        $amount = 0.0;
+
+        foreach ($availableInstallments as $installment) {
+            if ($installment->getValue() == $installmentNumber) {
+                $amount = $installment->getInterestRate();
+                break;
+            }
+        }
+
+        return $amount;
     }
 }

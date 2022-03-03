@@ -15,6 +15,10 @@ define([
         {
             type: 'paypal_braintree_brasil_paypal_wallet',
             component: 'Paypal_BraintreeBrasil/js/view/payment/method-renderer/paypal_wallet'
+        },
+        {
+            type: 'paypal_braintree_brasil_two_creditcards',
+            component: 'Paypal_BraintreeBrasil/js/view/payment/method-renderer/two_creditcards'
         }
     );
     return Component.extend({});

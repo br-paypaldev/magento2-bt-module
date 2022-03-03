@@ -41,6 +41,7 @@ class Stc
     public function send($stcData)
     {
         try {
+            $this->logger->info(__("STC request: %1", json_encode($stcData)));
             $stcResponse = $this->client->sendStc($stcData);
             if ($stcResponse->isSuccessful()) {
                 $this->logger->info(__("STC sent successfully"));

@@ -65,13 +65,13 @@ define(
 
                 var grandTotal = this.calculateGrandTotal();
 
-                $.when(installmentsAction(grandTotal)).then(function(result){
+                $.when(installmentsAction(grandTotal, 'creditcard')).then(function(result){
                     self.availableInstallments(result);
                 });
 
                 totals.totals.subscribe(function(){
                     grandTotal = self.calculateGrandTotal();
-                    $.when(installmentsAction(grandTotal)).then(function(result){
+                    $.when(installmentsAction(grandTotal, 'creditcard')).then(function(result){
                         self.availableInstallments(result);
                     });
                 })

@@ -64,6 +64,24 @@
                 <is_gateway>1</is_gateway>
                 <channel>DigitalHub_Ecom</channel>
             </paypal_braintree_brasil_paypal_wallet>
+            <paypal_braintree_brasil_two_creditcards>
+                <active>0</active>
+                <group>paypal_braintree_brasil</group>
+                <model>PaypalBraintreeBrasilTwoCreditCardsFacade</model>
+                <order_status>pending</order_status>
+                <payment_action>authorize</payment_action>
+                <title>Braintree Two Credit Cards</title>
+                <can_authorize>1</can_authorize>
+                <can_capture>1</can_capture>
+                <can_capture_partial>0</can_capture_partial>
+                <can_cancel>1</can_cancel>
+                <can_refund>1</can_refund>
+                <can_refund_partial_per_invoice>1</can_refund_partial_per_invoice>
+                <can_void>1</can_void>
+                <can_use_checkout>1</can_use_checkout>
+                <is_gateway>1</is_gateway>
+                <channel>DigitalHub_Ecom</channel>
+            </paypal_braintree_brasil_two_creditcards>
         </payment>
     </default>
 </config>

@@ -1,0 +1,186 @@
+<?php
+/**
+ * @var \Magento\Framework\Escaper $escaper
+ * @var \Paypal\BraintreeBrasil\Block\Info\CreditCard $block
+ */
+$card1 = $block->getInfo()->getAdditionalInformation('card_1');
+$card2 = $block->getInfo()->getAdditionalInformation('card_2');
+
+?>
+
+
+<h3><?= $escaper->escapeHtml($block->getMethod()->getTitle()) ?></h3>
+
+<p><?= __("First Credit Card") ?></p>
+<table class="admin__table-secondary order-information-table">
+    <tr>
+        <th class="label">
+            <?php echo __('Braintree Transaction ID') ?>
+        </th>
+        <td class="value">
+            <?= $escaper->escapeHtml($card1['transaction_id']) ?>
+        </td>
+    </tr>
+    <tr>
+        <th class="label">
+            <?php echo __('Card Number') ?>
+        </th>
+        <td class="value">
+            XXXX-XXXX-XXXX-<?= $escaper->escapeHtml($card1['cc_last']) ?>
+        </td>
+    </tr>
+    <tr>
+        <th class="label">
+            <?php echo __('Card Brand') ?>
+        </th>
+        <td class="value">
+            <?= $escaper->escapeHtml($card1['cc_type']) ?>
+        </td>
+    </tr>
+    <?php if($card1['installments'] > 1 && !$card1['installments_interest_rate']): ?>
+        <tr>
+            <th class="label">
+                <?php echo __('Installments') ?>
+            </th>
+            <td class="value">
+                <?php
+                    echo sprintf(
+                        __('%sx of %s without interest'),
+                        $card1['installments'],
+                        $block->formatCurrency($card1['installments_value'])
+                    );
+                ?>
+            </td>
+        </tr>
+    <?php elseif($card1['installments'] > 1 && $card1['installments_interest_rate']): ?>
+        <tr>
+            <th class="label">
+                <?php echo __('Installments') ?>
+            </th>
+            <td class="value">
+                <?php
+                    echo sprintf(
+                        __('%sx of %s with interest'),
+                        $card1['installments'],
+                        $block->formatCurrency($card1['installments_value'])
+                    );
+                ?>
+            </td>
+        </tr>
+    <?php elseif($card1['installments'] == 1): ?>
+        <tr>
+            <th class="label">
+                <?php echo __('Installments') ?>
+            </th>
+            <td class="value">
+                <?php echo __('1x'); ?>
+            </td>
+        </tr>
+    <?php endif; ?>
+    <?php foreach ($card1['refund'] ?? [] as $key => $data): ?>
+        <tr>
+            <th class="label">
+                <?php echo __('Refund ID %1', $key + 1) ?>
+            </th>
+            <td class="value">
+                <?= $escaper->escapeHtml($data['id']) ?>
+            </td>
+        </tr>
+        <tr>
+            <th class="label">
+                <?php echo __('Refund Amount %1', $key + 1) ?>
+            </th>
+            <td class="value">
+                <?= $escaper->escapeHtml($block->formatCurrency($data['amount'])) ?>
+            </td>
+        </tr>
+    <?php endforeach; ?>
+</table>
+
+<br/>
+
+<p><?= __("Second Credit Card") ?></p>
+<table class="admin__table-secondary order-information-table">
+    <tr>
+        <th class="label">
+            <?php echo __('Braintree Transaction ID') ?>
+        </th>
+        <td class="value">
+            <?= $escaper->escapeHtml($card2['transaction_id']) ?>
+        </td>
+    </tr>
+    <tr>
+        <th class="label">
+            <?php echo __('Card Number') ?>
+        </th>
+        <td class="value">
+            XXXX-XXXX-XXXX-<?= $escaper->escapeHtml($card2['cc_last']) ?>
+        </td>
+    </tr>
+    <tr>
+        <th class="label">
+            <?php echo __('Card Brand') ?>
+        </th>
+        <td class="value">
+            <?= $escaper->escapeHtml($card2['cc_type']) ?>
+        </td>
+    </tr>
+    <?php if($card2['installments'] > 1 && !$card2['installments_interest_rate']): ?>
+        <tr>
+            <th class="label">
+                <?php echo __('Installments') ?>
+            </th>
+            <td class="value">
+                <?php
+                echo sprintf(
+                    __('%sx of %s without interest'),
+                    $card2['installments'],
+                    $block->formatCurrency($card2['installments_value'])
+                );
+                ?>
+            </td>
+        </tr>
+    <?php elseif($card2['installments'] > 1 && $card2['installments_interest_rate']): ?>
+        <tr>
+            <th class="label">
+                <?php echo __('Installments') ?>
+            </th>
+            <td class="value">
+                <?php
+                echo sprintf(
+                    __('%sx of %s with interest'),
+                    $card2['installments'],
+                    $block->formatCurrency($card2['installments_value'])
+                );
+                ?>
+            </td>
+        </tr>
+    <?php elseif($card2['installments'] == 1): ?>
+        <tr>
+            <th class="label">
+                <?php echo __('Installments') ?>
+            </th>
+            <td class="value">
+                <?php echo __('1x'); ?>
+            </td>
+        </tr>
+    <?php endif; ?>
+    <?php foreach ($card2['refund'] ?? [] as $key => $data): ?>
+        <tr>
+            <th class="label">
+                <?php echo __('Refund ID %1', $key + 1) ?>
+            </th>
+            <td class="value">
+                <?= $escaper->escapeHtml($data['id']) ?>
+            </td>
+        </tr>
+        <tr>
+            <th class="label">
+                <?php echo __('Refund Amount %1', $key + 1) ?>
+            </th>
+            <td class="value">
+                <?= $escaper->escapeHtml($block->formatCurrency($data['amount'])) ?>
+            </td>
+        </tr>
+    <?php endforeach; ?>
+</table>

@@ -25,4 +25,18 @@
     <event name="sales_model_service_quote_submit_before">
         <observer name="braintree_brasil_sales_model_service_quote_submit_before" instance="Paypal\BraintreeBrasil\Observer\Totals\CopyFromQuoteToOrder" />
     </event>
+
+    <!-- Two Credit Cards -->
+    <event name="payment_method_assign_data_paypal_braintree_brasil_two_creditcards">
+        <observer name="paypal_braintree_brasil_two_creditcards_data_assign" instance="Paypal\BraintreeBrasil\Observer\TwoCreditCards\DataAssignObserver" />
+    </event>
+    <event name="sales_quote_payment_import_data_before">
+        <observer name="paypal_braintree_brasil_two_creditcards_quote_data_assign" instance="Paypal\BraintreeBrasil\Observer\TwoCreditCards\QuoteDataAssignObserver" />
+    </event>
+    <event name="braintree_brasil_two_creditcards_save_payment_token">
+        <observer name="paypal_braintree_brasil_two_creditcards_save_payment_token" instance="Paypal\BraintreeBrasil\Observer\TwoCreditCards\SavePaymentTokenObserver" />
+    </event>
+    <event name="checkout_submit_all_after">
+        <observer name="paypal_braintree_brasil_creditcard_create_invoice" instance="Paypal\BraintreeBrasil\Observer\TwoCreditCards\CreateInvoiceObserver"/>
+    </event>
 </config>

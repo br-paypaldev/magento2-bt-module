@@ -1,0 +1,115 @@
+<fieldset data-bind="attr: {class: 'fieldset payment items ccard ' + getCode(), id: 'payment_form_' + getCode() + '_1'}">
+    <legend class="legend">
+        <span><!-- ko i18n: 'Credit card information'--><!-- /ko --></span>
+    </legend>
+
+    <br />
+
+    <div class="field required">
+        <label data-bind="attr: {for: getCode() + '_cc_value_1'}" class="label">
+            <span><!-- ko i18n: 'First Credit Card Value'--><!-- /ko --></span>
+        </label>
+        <div class="control">
+            <input type="tel" name="payment[cc_value]" class="input-text cc_value"
+                   data-bind=" autocomplete: off,
+                    value: card1Total,
+                    valueUpdate: ['keydown', 'keyup', 'change'],
+                    afterRender: setDecimalMask1,
+                    attr: { 'data-validate': JSON.stringify({'required-number':true, required:true}), 'id': getCode() + '_cc_value_1'}"
+            />
+            <div if="paymentValueMsg" generated="true" class="mage-error" data-bind="text: paymentValueMsg"></div>
+        </div>
+    </div>
+
+    <!-- ko if: card1AvailableInstallments && card1AvailableInstallments().length -->
+    <div class="field required">
+        <label data-bind="attr: {for: getCode() + '_cc_installments_1'}" class="label">
+            <span><!-- ko i18n: 'Installments'--><!-- /ko --></span>
+        </label>
+        <div class="control">
+            <select name="payment[cc_installments]"
+                    class="select select-installments"
+                    data-validate="{'required-entry': true}"
+                    data-bind="attr: {id: getCode() + '_cc_installments_1', 'data-container': getCode() + '-cc-installments'},
+                               enable: isActive($parents),
+                               options: card1AvailableInstallments,
+                               optionsValue: 'value',
+                               optionsText: 'label',
+                               value: creditCard1Installments">
+            </select>
+        </div>
+    </div>
+    <!-- /ko -->
+
+    <!-- ko if: availablePaymentTokens().length -->
+    <div class="field">
+        <label data-bind="attr: {for: getCode() + '_cc_payment_token_1'}" class="label">
+            <span><!-- ko i18n: 'My credit cards'--><!-- /ko --></span>
+        </label>
+        <div class="control">
+            <select name="payment[cc_payment_token]"
+                    class="select"
+                    data-bind="attr: {id: getCode() + '_cc_payment_token_1', 'data-container': getCode() + '-cc-payment-token'},
+                               enable: isActive($parents),
+                               options: getAvailablePaymentTokens(),
+                               optionsValue: 'value',
+                               optionsText: 'label',
+                               value: usePaymentToken1">
+            </select>
+        </div>
+    </div>
+    <!-- /ko -->
+
+    <div class="container-cc-form" data-bind="visible: showForm1, afterRender: initCard1HostedFields">
+        <div class="field required">
+            <label data-bind="attr: {for: getCode() + '_cc_holder_name'}" class="label">
+                <span><!-- ko i18n: 'Credit card owner'--><!-- /ko --></span>
+            </label>
+            <div class="control">
+                <span id="dropin-cc-name-1" class="input-cc-hosted-field cc-name"></span>
+            </div>
+        </div>
+        <div class="field number required">
+            <label data-bind="attr: {for: getCode() + '_cc_number_1'}" class="label">
+                <span><!-- ko i18n: 'Credit card number'--><!-- /ko --></span>
+            </label>
+            <div class="control">
+                <span id="dropin-cc-number-1" class="input-cc-hosted-field cc-number"></span>
+            </div>
+        </div>
+
+        <div class="field required" data-bind="attr: {id: getCode() + '_cc_type_exp_div_1'}">
+            <label data-bind="attr: {for: getCode() + '_expiration'}" class="label">
+                <span><!-- ko i18n: 'Card expiration'--><!-- /ko --></span>
+            </label>
+            <div class="control">
+                <span id="dropin-cc-expiration-1" class="input-cc-hosted-field cc-expiration"></span>
+            </div>
+        </div>
+
+        <div class="field required" data-bind="attr: {id: getCode() + '_cc_type_cvv_div_1'}">
+            <label data-bind="attr: {for: getCode() + '_cc_cid_1'}" class="label">
+                <span><!-- ko i18n: 'Credit card security code'--><!-- /ko --></span>
+            </label>
+            <div class="control _with-tooltip">
+                <span id="dropin-cc-cvv-1" class="input-cc-hosted-field cc-cvv"></span>
+            </div>
+        </div>
+
+        <!-- ko if: isLoggedIn -->
+        <div class="field required">
+            <div class="control">
+                <label data-bind="attr: {for: getCode() + '_save_cc_1'}" class="label">
+                    <input type="checkbox" name="payment[save_cc]" data-bind="
+                                value: 1,
+                                attr: {id: getCode() + '_save_cc_1', 'data-container': getCode() + '-save-cc'},
+                                enable: isActive($parents),
+                                checked: saveCc1">
+                    <!-- ko i18n: 'Save this card for future use'--><!-- /ko -->
+                </label>
+            </div>
+        </div>
+        <!-- /ko -->
+    </div>
+
+</fieldset>

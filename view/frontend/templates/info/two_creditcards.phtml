@@ -1,0 +1,102 @@
+<?php
+/**
+ * @var \Magento\Framework\Escaper $escaper
+ * @var \Paypal\BraintreeBrasil\Block\Info\CreditCard $block
+ */
+$card1Additional = $block->getInfo()->getAdditionalInformation('card_1');
+$card2Additional = $block->getInfo()->getAdditionalInformation('card_2');
+?>
+<h4><?= $escaper->escapeHtml($block->getMethod()->getTitle()) ?></h4>
+
+<h5><?= __("First Credit Card") ?></h5>
+<p>
+    <strong><?php echo __('Card Number') ?></strong><br>
+    XXXX-XXXX-XXXX-<?= $escaper->escapeHtml($card1Additional['cc_last']) ?>
+</p>
+
+<p>
+    <strong><?php echo __('Card Brand') ?></strong><br>
+    <?= $escaper->escapeHtml($card1Additional['cc_type']) ?>
+</p>
+
+<?php if($card1Additional['installments'] > 1 && !$card1Additional['installments_interest_rate']): ?>
+    <p>
+        <strong><?php echo __('Installments') ?></strong><br>
+        <?php
+            echo sprintf(
+                __('%sx of %s without interest'),
+                $card1Additional['installments'],
+                $block->formatCurrency($card1Additional['installments_value'])
+            );
+        ?>
+    </p>
+<?php elseif($card1Additional['installments'] > 1 && $card1Additional['installments_interest_rate']): ?>
+    <p>
+        <strong><?php echo __('Installments') ?></strong><br>
+        <?php
+            echo sprintf(
+                __('%sx of %s with interest'),
+                $card1Additional['installments'],
+                $block->formatCurrency($card1Additional['installments_value'])
+            );
+        ?>
+    </p>
+<?php elseif($card1Additional['installments'] == 1): ?>
+    <p>
+        <strong><?php echo __('Installments') ?></strong><br>
+        <?php echo __('1x'); ?>
+    </p>
+<?php endif; ?>
+<?php foreach ($card1Additional['refund'] ?? [] as $key => $data): ?>
+    <p>
+        <strong><?php echo __('Refund Amount %1', $key + 1) ?></strong>
+        <?php echo $escaper->escapeHtml($block->formatCurrency($data['amount'])) ?>
+    </p>
+<?php endforeach; ?>
+
+
+<h5><?= __("Second Credit Card") ?></h5>
+<p>
+    <strong><?php echo __('Card Number') ?></strong><br>
+    XXXX-XXXX-XXXX-<?= $escaper->escapeHtml($card2Additional['cc_last']) ?>
+</p>
+
+<p>
+    <strong><?php echo __('Card Brand') ?></strong><br>
+    <?= $escaper->escapeHtml($card2Additional['cc_type']) ?>
+</p>
+
+<?php if($card2Additional['installments'] > 1 && !$card2Additional['installments_interest_rate']): ?>
+    <p>
+        <strong><?php echo __('Installments') ?></strong><br>
+        <?php
+        echo sprintf(
+            __('%sx of %s without interest'),
+            $card2Additional['installments'],
+            $block->formatCurrency($card2Additional['installments_value'])
+        );
+        ?>
+    </p>
+<?php elseif($card2Additional['installments'] > 1 && $card2Additional['installments_interest_rate']): ?>
+    <p>
+        <strong><?php echo __('Installments') ?></strong><br>
+        <?php
+        echo sprintf(
+            __('%sx of %s with interest'),
+            $card2Additional['installments'],
+            $block->formatCurrency($card2Additional['installments_value'])
+        );
+        ?>
+    </p>
+<?php elseif($card2Additional['installments'] == 1): ?>
+    <p>
+        <strong><?php echo __('Installments') ?></strong><br>
+        <?php echo __('1x'); ?>
+    </p>
+<?php endif; ?>
+<?php foreach ($card2Additional['refund'] ?? [] as $key => $data): ?>
+    <p>
+        <strong><?php echo __('Refund Amount %1', $key + 1) ?></strong>
+        <?php echo $escaper->escapeHtml($block->formatCurrency($data['amount'])) ?>
+    </p>
+<?php endforeach; ?>

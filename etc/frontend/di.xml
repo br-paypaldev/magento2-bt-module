@@ -14,6 +14,7 @@
                 <item name="paypal_braintree_brasil_creditcard_config" xsi:type="object">Paypal\BraintreeBrasil\Model\Ui\CreditCard\ConfigProvider</item>
                 <item name="paypal_braintree_brasil_debitcard_config" xsi:type="object">Paypal\BraintreeBrasil\Model\Ui\DebitCard\ConfigProvider</item>
                 <item name="paypal_braintree_brasil_paypal_wallet_config" xsi:type="object">Paypal\BraintreeBrasil\Model\Ui\PaypalWallet\ConfigProvider</item>
+                <item name="paypal_braintree_brasil_two_creditcards_config" xsi:type="object">Paypal\BraintreeBrasil\Model\Ui\TwoCreditCards\ConfigProvider</item>
             </argument>
         </arguments>
     </type>

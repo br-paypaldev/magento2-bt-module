@@ -4,15 +4,28 @@ define([
 ], function (storage, urlBuilder) {
     'use strict';
 
-    return function (total) {
-        return storage.post(
-            urlBuilder.createUrl(
-                '/braintreebrasil/creditcard/available-installments',
-                {}
-            ),
-            JSON.stringify({
-                total: total
-            })
-        )
+    return function (total, type) {
+        if (type === 'creditcard') {
+            return storage.post(
+                urlBuilder.createUrl(
+                    '/braintreebrasil/creditcard/available-installments',
+                    {}
+                ),
+                JSON.stringify({
+                    total: total
+                })
+            )
+        }
+        if (type === 'twocreditcards') {
+            return storage.post(
+                urlBuilder.createUrl(
+                    '/braintreebrasil/twocreditcards/available-installments',
+                    {}
+                ),
+                JSON.stringify({
+                    total: total
+                })
+            )
+        }
     };
 });

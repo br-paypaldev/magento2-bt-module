@@ -4,15 +4,19 @@ define([
 ], function (storage, urlBuilder) {
     'use strict';
 
-    return function (installments) {
+    return function (installments, column) {
+        jQuery('body').trigger('processStart');
         return storage.post(
             urlBuilder.createUrl(
                 '/braintreebrasil/creditcard/save-selected-installments',
                 {}
             ),
             JSON.stringify({
-                installments: installments
+                installments: installments,
+                column: column
             })
-        );
+        ).complete(function () {
+            jQuery('body').trigger('processStop');
+        });
     };
 });
