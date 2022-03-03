@@ -40,8 +40,6 @@
             <label>Enable installments</label>
             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
             <config_path>payment/paypal_braintree_brasil_creditcard/enable_installments</config_path>
-            <frontend_model>Paypal\BraintreeBrasil\Block\Adminhtml\System\Config\ChangeAuthorizeCaptureValue</frontend_model>
-            <comment>Important: For payments with installments the value 'Authorization and Capture (capture automatically)' is assumed.</comment>
         </field>
 
         <field id="payment_action" translate="label" type="select" sortOrder="45" showInDefault="1" showInWebsite="1" showInStore="1">

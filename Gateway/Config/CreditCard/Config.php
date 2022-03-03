@@ -96,9 +96,6 @@ class Config extends GatewayConfig
      */
     public function getPaymentAction()
     {
-        if ($this->getEnableInstallments()) {
-            return 'authorize_capture';
-        }
         $storeId = $this->storeResolver->getCurrentStoreId();
         return $this->getValue(self::KEY_PAYMENT_ACTION, $storeId);
     }
