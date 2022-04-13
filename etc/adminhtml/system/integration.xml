@@ -78,7 +78,7 @@
         </field>
 
         <field id="stc_merchant_id" translate="label" type="text" sortOrder="76" showInDefault="1" showInWebsite="1" showInStore="1">
-            <label>Specify a Merchant ID for STC</label>
+            <label>Paypal Merchant ID for STC</label>
             <config_path>paypal_braintree_brasil/integration/stc_merchant_id</config_path>
         </field>
 
@@ -88,7 +88,7 @@
         </field>
 
         <field id="stc_private_key" translate="label" type="text" sortOrder="78" showInDefault="1" showInWebsite="1" showInStore="1">
-            <label>Specify a Private Key for STC</label>
+            <label>Secret for STC</label>
             <config_path>paypal_braintree_brasil/integration/stc_private_key</config_path>
         </field>
 
