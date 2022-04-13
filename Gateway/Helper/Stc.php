@@ -54,12 +54,8 @@ class Stc
                 $stcResponse->getBody()
             );
             $this->logger->info($msg);
-            if ($this->config->getStcBlockTransaction()) {
-                throw new \Exception($msg);
-            }
         } catch (\Exception $exception) {
             $this->logger->error(__("Can't create STC. %1", $exception->getMessage()));
-            throw $exception;
         }
     }
 }

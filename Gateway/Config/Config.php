@@ -27,7 +27,6 @@ class Config extends GatewayConfig
     const KEY_STC_PRIVATE_KEY = 'stc_private_key';
     const KEY_STC_ACCESS_TOKEN = 'stc_access_token';
     const KEY_STC_ACCESS_TOKEN_EXPIRES = 'stc_access_token_expires';
-    const KEY_STC_BLOCK_TRANSACTION = 'stc_block_transaction';
 
     const KEY_DEBUG = 'debug';
 
@@ -242,14 +241,5 @@ class Config extends GatewayConfig
         $this->writer->save(self::KEY_BASE . '/' . self::KEY_STC_ACCESS_TOKEN_EXPIRES, $now->getTimestamp());
         //limpa cache após novos valores
         $this->cacheTypeList->cleanType('config');
-    }
-
-    /**
-     * @return bool
-     */
-    public function getStcBlockTransaction()
-    {
-        $storeId = $this->storeResolver->getCurrentStoreId();
-        return (bool)$this->getValue(self::KEY_STC_BLOCK_TRANSACTION, $storeId);
     }
 }
