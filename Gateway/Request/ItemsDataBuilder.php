@@ -11,10 +11,13 @@ use Magento\Sales\Model\Order;
 use Paypal\BraintreeBrasil\Logger\Logger;
 
 /**
- * Class CustomerDataBuilder
+ * Class ItemsDataBuilder
  */
 class ItemsDataBuilder implements BuilderInterface
 {
+    public const ITEM_NAME_LENGTH = 35;
+    public const ITEM_DESCRIPTION_LENGTH = 127;
+
     /**
      * @var Logger
      */
@@ -60,7 +63,12 @@ class ItemsDataBuilder implements BuilderInterface
             foreach ($quote->getAllVisibleItems() as $item) {
                 $request['lineItems'][] = [
                     'kind' => \Braintree\TransactionLineItem::DEBIT,
-                    'name' => $item->getName(),
+                    'name' => substr($item->getName(), 0, self::ITEM_NAME_LENGTH),
+                    'description' => substr(
+                        strip_tags($item->getProduct()->getShortDescription()),
+                        0,
+                        self::ITEM_DESCRIPTION_LENGTH
+                    ),
                     'quantity' => $item->getQty(),
                     'totalAmount' => $item->getBasePrice() * $item->getQty() - $item->getDiscountAmount(),
                     'unitAmount' => $item->getBasePrice() - $item->getDiscountAmount() / $item->getQty(),
