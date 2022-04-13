@@ -115,7 +115,7 @@ class CreditCardManagement implements CreditCardManagementInterface
             $installmentPrice = $totalCost / $installmentNumber;
             $minValue = (float)$configItem['min_value'];
 
-            if ($total >= $minValue) {
+            if ($installmentPrice >= $minValue) {
                 $installment = $this->installmentInterfaceFactory->create();
 
                 if (!$interestRate) {
