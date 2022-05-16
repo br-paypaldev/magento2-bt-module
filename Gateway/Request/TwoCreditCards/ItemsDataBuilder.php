@@ -5,37 +5,14 @@ namespace Paypal\BraintreeBrasil\Gateway\Request\TwoCreditCards;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Payment\Gateway\Data\PaymentDataObject;
 use Magento\Payment\Gateway\Helper\SubjectReader;
-use Magento\Payment\Gateway\Request\BuilderInterface;
-use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Sales\Model\Order;
-use Paypal\BraintreeBrasil\Logger\Logger;
+use Paypal\BraintreeBrasil\Gateway\Request\ItemsDataBuilder as DefaultItemsDataBuilder;
 
 /**
- * Class CustomerDataBuilder
+ * Class ItemsDataBuilder
  */
-class ItemsDataBuilder implements BuilderInterface
+class ItemsDataBuilder extends DefaultItemsDataBuilder
 {
-    /**
-     * @var Logger
-     */
-    private $logger;
-
-    /**
-     * @var CartRepositoryInterface
-     */
-    private $cartRepository;
-
-    /**
-     * @param Logger $logger
-     * @param CartRepositoryInterface $cartRepository
-     */
-    public function __construct(
-        Logger $logger,
-        CartRepositoryInterface $cartRepository
-    ) {
-        $this->logger = $logger;
-        $this->cartRepository = $cartRepository;
-    }
 
     /**
      * Add items data into request
@@ -59,13 +36,7 @@ class ItemsDataBuilder implements BuilderInterface
 
         try {
             foreach ($quote->getAllVisibleItems() as $item) {
-                $item = [
-                    'kind' => \Braintree\TransactionLineItem::DEBIT,
-                    'name' => $item->getName(),
-                    'quantity' => $item->getQty(),
-                    'totalAmount' => $item->getBasePrice() * $item->getQty() - $item->getDiscountAmount(),
-                    'unitAmount' => $item->getBasePrice() - $item->getDiscountAmount() / $item->getQty(),
-                ];
+                $item = $this->buildLineItem($item);
                 $request['card_1']['lineItems'][] = $item;
                 $request['card_2']['lineItems'][] = $item;
             }

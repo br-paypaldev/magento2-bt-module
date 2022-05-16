@@ -7,6 +7,7 @@ use Magento\Payment\Gateway\Data\PaymentDataObject;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Request\BuilderInterface;
 use Magento\Quote\Api\CartRepositoryInterface;
+use Magento\Quote\Model\Quote\Item;
 use Magento\Sales\Model\Order;
 use Paypal\BraintreeBrasil\Logger\Logger;
 
@@ -21,12 +22,12 @@ class ItemsDataBuilder implements BuilderInterface
     /**
      * @var Logger
      */
-    private $logger;
+    protected $logger;
 
     /**
      * @var CartRepositoryInterface
      */
-    private $cartRepository;
+    protected $cartRepository;
 
     /**
      * @param Logger $logger
@@ -61,23 +62,33 @@ class ItemsDataBuilder implements BuilderInterface
 
         try {
             foreach ($quote->getAllVisibleItems() as $item) {
-                $request['lineItems'][] = [
-                    'kind' => \Braintree\TransactionLineItem::DEBIT,
-                    'name' => substr($item->getName(), 0, self::ITEM_NAME_LENGTH),
-                    'description' => substr(
-                        strip_tags($item->getProduct()->getShortDescription()),
-                        0,
-                        self::ITEM_DESCRIPTION_LENGTH
-                    ),
-                    'quantity' => $item->getQty(),
-                    'totalAmount' => $item->getBasePrice() * $item->getQty() - $item->getDiscountAmount(),
-                    'unitAmount' => $item->getBasePrice() - $item->getDiscountAmount() / $item->getQty(),
-                ];
+                $request['lineItems'][] = $this->buildLineItem($item);
             }
         } catch (\Exception $e) {
             throw new LocalizedException(__($e->getMessage()));
         }
 
         return $request;
+    }
+
+
+    /**
+     * @param Item $item
+     * @return array
+     */
+    protected function buildLineItem($item)
+    {
+        return [
+            'kind' => \Braintree\TransactionLineItem::DEBIT,
+            'name' => substr($item->getName(), 0, self::ITEM_NAME_LENGTH),
+            'description' => substr(
+                strip_tags($item->getProduct()->getShortDescription()),
+                0,
+                self::ITEM_DESCRIPTION_LENGTH
+            ),
+            'quantity' => $item->getQty(),
+            'totalAmount' => $item->getBasePrice() * $item->getQty() - $item->getDiscountAmount(),
+            'unitAmount' => $item->getBasePrice() - $item->getDiscountAmount() / $item->getQty(),
+        ];
     }
 }
