@@ -96,10 +96,12 @@ class TransactionAuthorization implements ClientInterface
             }
 
             $paymentTokenId = $request['payment_token_id'];
-            $braintreeCustomerId = $request['customer']['braintree_customer_id'];
+            $braintreeCustomerId = $braintreeCustomer->toArray()['id'];
 
             $this->sendStc($request['stc']);
             unset($request['customer'], $request['payment_token_id'], $request['stc']);
+
+            $request['customerId'] = $braintreeCustomerId;
 
             $result = $this->braintreeClient->getBraintreeClient()->transaction()->sale($request);
 

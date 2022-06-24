@@ -104,6 +104,8 @@ class TransactionAuthorization implements ClientInterface
                 'card_2' => $request['card_2']['payment_token_id']
             ];
 
+            $braintreeCustomerId = $braintreeCustomer->toArray()['id'];
+
             $this->sendStc($request['card_1']['stc'], 'First Credit Card');
             $this->sendStc($request['card_2']['stc'], 'Second Credit Card');
 
@@ -115,6 +117,9 @@ class TransactionAuthorization implements ClientInterface
                 $request['card_2']['stc']
             );
 
+            $request['card_1']['customerId'] = $braintreeCustomerId;
+            $request['card_2']['customerId'] = $braintreeCustomerId;
+
             $request['card_1']['billing'] = $request['billing'];
             $request['card_2']['billing'] = $request['billing'];
             if (isset($request['shipping'])) {
@@ -124,6 +129,8 @@ class TransactionAuthorization implements ClientInterface
 
             $result['card_1'] = $this->braintreeClient->getBraintreeClient()->transaction()->sale($request['card_1']);
             $result['card_2'] = $this->braintreeClient->getBraintreeClient()->transaction()->sale($request['card_2']);
+
+            $response['braintree_customer_id'] = $braintreeCustomerId;
 
             $this->logger->info('Transaction RESULT', [$result]);
 
