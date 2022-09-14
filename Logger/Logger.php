@@ -2,6 +2,7 @@
 
 namespace Paypal\BraintreeBrasil\Logger;
 
+use Monolog\DateTimeImmutable;
 use Paypal\BraintreeBrasil\Gateway\Config\Config;
 use Magento\Store\Model\StoreResolver;
 
@@ -30,7 +31,8 @@ class Logger extends \Monolog\Logger
         Config $braintreeConfig,
         array $handlers = array(),
         array $processors = array()
-    ) {
+    )
+    {
         parent::__construct($name, $handlers, $processors);
         $this->braintreeConfig = $braintreeConfig;
         $this->storeResolver = $storeResolver;
@@ -42,12 +44,12 @@ class Logger extends \Monolog\Logger
      * @param array $context
      * @return bool
      */
-    public function addRecord($level, $message, array $context = [])
+    public function addRecord(int $level, string $message, array $context = [], DateTimeImmutable $datetime = null):bool
     {
         if ($this->braintreeConfig->isDebugEnabled()) {
             $storeId = $this->storeResolver->getCurrentStoreId();
             $message = '[Store ID ' . $storeId . '] ' . $message;
-            return parent::addRecord($level, $message, $context);
+            return parent::addRecord($level, $message, $context, $datetime);
         }
         return true;
     }

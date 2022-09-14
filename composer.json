@@ -7,8 +7,8 @@
         "AFL-3.0"
     ],
     "require": {
-        "php": "~7.3.0||~7.4.0",
-        "braintree/braintree_php" : "6.2.0"
+        "php": "~7.3.0||~7.4.0||~8.1.0",
+        "braintree/braintree_php" : "6.5.1"
     },
     "replace": {
         "braintree/braintree": "*",

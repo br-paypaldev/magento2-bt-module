@@ -94,7 +94,7 @@ class CustomerDataBuilder implements BuilderInterface
                     ]),
                     'locality' => $billingAddress->getCity(),
                     'postalCode' => $this->onlyNumbers($billingAddress->getPostcode()),
-                    'region' => $billingAddress->getRegionName()
+                    'region' => $billingAddress->getRegion()
                 ]
             ];
 
@@ -115,7 +115,7 @@ class CustomerDataBuilder implements BuilderInterface
                     ]),
                     'locality' => $shippingAddress->getCity(),
                     'postalCode' => $this->onlyNumbers($shippingAddress->getPostcode()),
-                    'region' => $shippingAddress->getRegionName()
+                    'region' => $shippingAddress->getRegion()
                 ];
             }
         } catch (\Exception $e) {

@@ -12,14 +12,15 @@ Este módulo contém os principais produtos PayPal para o mercado Brasileiro:
 
 ## Requisitos
 
-O servidor precisa ter suporte à TLS 1.2 ou superior e HTTPS 1.1 
-O servidor precisa ter suporte à PHP 7.0 ou superior;
+O servidor precisa ter suporte à TLS 1.2 ou superior e HTTPS 1.1;
+
+O servidor precisa ter suporte à PHP 8.1 ou superior.
 
 **A solução de Braintree só irá funcionar caso tenha sido aprovado pelo PayPal.**
 
 ## Compatibilidade
 
-Versões Magento Open Source 2.3.X e 2.4.X e Commerce Cloud 2.3.X e 2.4.X;
+Versões Magento Open Source 2.4.4 e Commerce Cloud 2.4.4;
 
 ## Instalação
 
@@ -31,7 +32,7 @@ Para instalar, adicione as seguintes linhas ao seu composer.json:
 ...
 "require":{
     ...
-    "br-paypaldev/module-braintree-brasil":"^1.0"
+    "br-paypaldev/module-braintree-brasil":"^2.0"
  }
 ```
 Ou simplesmente digite  o comando abaixo:

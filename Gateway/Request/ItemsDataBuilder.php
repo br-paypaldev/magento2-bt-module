@@ -34,9 +34,10 @@ class ItemsDataBuilder implements BuilderInterface
      * @param CartRepositoryInterface $cartRepository
      */
     public function __construct(
-        Logger $logger,
+        Logger                  $logger,
         CartRepositoryInterface $cartRepository
-    ) {
+    )
+    {
         $this->logger = $logger;
         $this->cartRepository = $cartRepository;
     }
@@ -82,7 +83,7 @@ class ItemsDataBuilder implements BuilderInterface
             'kind' => \Braintree\TransactionLineItem::DEBIT,
             'name' => substr($item->getName(), 0, self::ITEM_NAME_LENGTH),
             'description' => substr(
-                strip_tags($item->getProduct()->getShortDescription()),
+                strip_tags($item->getProduct()->getShortDescription() ?: ''),
                 0,
                 self::ITEM_DESCRIPTION_LENGTH
             ),
