@@ -124,7 +124,7 @@ class StcDataBuilder implements BuilderInterface
                 ],
                 [
                     'key' => 'sender_create_date',
-                    'value' => $now->format('Y-m-d\TH:i:s')
+                    'value' => $now->format('Y-m-d\TH:i:s.vP')
                 ],
                 [
                     'key' => 'br_cpf',

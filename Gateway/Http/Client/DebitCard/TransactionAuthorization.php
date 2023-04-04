@@ -91,7 +91,7 @@ class TransactionAuthorization implements ClientInterface
 
             foreach ($request['stc']['additional_data'] as &$data) {
                 if ($data['key'] === 'sender_create_date') {
-                    $data['value'] = $braintreeCustomer->createdAt->format('Y-m-d\TH:i:s');
+                    $data['value'] = $braintreeCustomer->createdAt->format('Y-m-d\TH:i:s.vP');
                     break;
                 }
             }
