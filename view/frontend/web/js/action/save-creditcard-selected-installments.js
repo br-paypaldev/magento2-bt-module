@@ -5,7 +5,6 @@ define([
     'use strict';
 
     return function (installments, column) {
-        jQuery('body').trigger('processStart');
         return storage.post(
             urlBuilder.createUrl(
                 '/braintreebrasil/creditcard/save-selected-installments',
@@ -15,8 +14,6 @@ define([
                 installments: installments,
                 column: column
             })
-        ).complete(function () {
-            jQuery('body').trigger('processStop');
-        });
+        )
     };
 });

@@ -20,7 +20,7 @@ O servidor precisa ter suporte à PHP 8.1 ou superior.
 
 ## Compatibilidade
 
-Versões Magento Open Source 2.4.4 e Commerce Cloud 2.4.4;
+Versões Magento Open Source 2.4.4 até 2.4.6 e Commerce Cloud 2.4.4 até 2.4.6;
 
 ## Instalação
 
