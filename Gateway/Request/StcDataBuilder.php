@@ -129,6 +129,10 @@ class StcDataBuilder implements BuilderInterface
                 [
                     'key' => 'br_cpf',
                     'value' => $cnpj ?: $this->fieldsMapper->getCustomerCpf($quote)
+                ],
+                [
+                    'key' => 'cd_string_one',
+                    'value' => (bool) $order->getCustomerIsGuest() ? '0' : '1'
                 ]
             ]
         ];
