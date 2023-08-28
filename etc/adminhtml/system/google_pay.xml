@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<include xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_include.xsd">
+    <group id="google_pay" translate="label" type="text" sortOrder="600" showInDefault="1" showInWebsite="1" showInStore="1">
+        <label>Google Pay</label>
+
+        <field id="active" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Enable payment method</label>
+            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+            <config_path>payment/paypal_braintree_brasil_google_pay/active</config_path>
+        </field>
+
+        <field id="title" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Payment method title</label>
+            <config_path>payment/paypal_braintree_brasil_google_pay/title</config_path>
+        </field>
+
+        <field id="google_merchant_id" translate="label" type="text" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Google Merchant ID (production mode)</label>
+            <config_path>payment/paypal_braintree_brasil_google_pay/google_merchant_id</config_path>
+        </field>
+
+        <field id="sandbox_merchant_account_id" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Use a different Merchant Account ID (sandbox)</label>
+            <source_model>Paypal\BraintreeBrasil\Model\Config\Source\MerchantAccountId</source_model>
+            <config_path>payment/paypal_braintree_brasil_google_pay/sandbox_merchant_account_id</config_path>
+            <comment>If options are not showing, review 'Merchant Account Id Configuration' section and add options there</comment>
+        </field>
+
+        <field id="production_merchant_account_id" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Use a different Merchant Account ID (production)</label>
+            <source_model>Paypal\BraintreeBrasil\Model\Config\Source\MerchantAccountId</source_model>
+            <config_path>payment/paypal_braintree_brasil_google_pay/production_merchant_account_id</config_path>
+            <comment>If options are not showing, review 'Merchant Account Id Configuration' section and add options there</comment>
+        </field>
+
+        <field id="payment_action" translate="label" type="select" sortOrder="45" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Capture method</label>
+            <source_model>Paypal\BraintreeBrasil\Model\Config\Source\PaymentAction</source_model>
+            <config_path>payment/paypal_braintree_brasil_google_pay/payment_action</config_path>
+        </field>
+
+        <field id="descriptor_active" translate="label" type="select" sortOrder="81" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Enable dynamic descriptor</label>
+            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+            <config_path>payment/paypal_braintree_brasil_google_pay/descriptor_active</config_path>
+        </field>
+
+        <field id="descriptor_name" translate="label" type="text" sortOrder="82" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Dynamic descriptor name</label>
+            <config_path>payment/paypal_braintree_brasil_google_pay/descriptor_name</config_path>
+            <depends>
+                <field id="descriptor_active">1</field>
+            </depends>
+        </field>
+
+        <field id="descriptor_phone" translate="label" type="text" sortOrder="83" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Dynamic descriptor phone</label>
+            <config_path>payment/paypal_braintree_brasil_google_pay/descriptor_phone</config_path>
+            <depends>
+                <field id="descriptor_active">1</field>
+            </depends>
+        </field>
+
+        <field id="descriptor_url" translate="label" type="text" sortOrder="84" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Dynamic descriptor URL</label>
+            <config_path>payment/paypal_braintree_brasil_google_pay/descriptor_url</config_path>
+            <depends>
+                <field id="descriptor_active">1</field>
+            </depends>
+        </field>
+
+        <field id="sort_order" translate="label" type="text" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Sort Order</label>
+            <frontend_class>validate-number</frontend_class>
+            <config_path>payment/paypal_braintree_brasil_google_pay/sort_order</config_path>
+        </field>
+    </group>
+</include>
