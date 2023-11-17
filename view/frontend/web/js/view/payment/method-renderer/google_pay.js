@@ -89,9 +89,6 @@ define(
                     environment: this.getGlobalConfig().integration_mode === 'production' ? 'PRODUCTION' : 'TEST'
                 });
 
-                console.log(paymentsClient);
-                console.log(this.getGlobalConfig().integration_mode === 'production' ? 'PRODUCTION' : 'TEST')
-
                 braintreeBrasilClient.create({
                     authorization: this.getMethodConfig().client_token
                 }, function(err, clientInstance) {
@@ -155,7 +152,6 @@ define(
                                         paymentsClient.loadPaymentData(paymentDataRequest).then(paymentData => {
                                             return googlePayInstance.parseResponse(paymentData);
                                         }).then(result => {
-                                            console.log(result);
                                             self.googlePayPaymentData(result);
                                             self.canPlaceOrder(true);
                                             self.googlePayAccountAuthorized(true);

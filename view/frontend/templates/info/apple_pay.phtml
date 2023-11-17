@@ -1,0 +1,4 @@
+<?php /** @var \Magento\Framework\Escaper $escaper */ ?>
+<?php /** @var \Paypal\BraintreeBrasil\Block\Info\ApplePay $block */ ?>
+<?php $additionalInformation = $block->getInfo()->getAdditionalInformation(); ?>
+<h4><?= $escaper->escapeHtml($block->getMethod()->getTitle()) ?></h4>

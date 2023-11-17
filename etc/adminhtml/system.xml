@@ -11,8 +11,9 @@
                 <include path="Paypal_BraintreeBrasil::system/twocreditcards.xml"/>
                 <include path="Paypal_BraintreeBrasil::system/debitcard.xml"/>
                 <include path="Paypal_BraintreeBrasil::system/paypal_wallet.xml"/>
+                <include path="Paypal_BraintreeBrasil::system/google_pay.xml"/>
+                <include path="Paypal_BraintreeBrasil::system/apple_pay.xml"/>
                 <include path="Paypal_BraintreeBrasil::system/merchant_account_id.xml"/>
-
             </group>
         </section>
     </system>

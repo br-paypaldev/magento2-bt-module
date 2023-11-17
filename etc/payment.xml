@@ -18,5 +18,11 @@
         <method name="paypal_braintree_brasil_two_creditcards">
             <allow_multiple_address>0</allow_multiple_address>
         </method>
+        <method name="paypal_braintree_brasil_google_pay">
+            <allow_multiple_address>0</allow_multiple_address>
+        </method>
+        <method name="paypal_braintree_brasil_apple_pay">
+            <allow_multiple_address>0</allow_multiple_address>
+        </method>
     </methods>
 </payment>
